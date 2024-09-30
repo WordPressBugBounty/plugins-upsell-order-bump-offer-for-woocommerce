@@ -17,12 +17,12 @@
  * Description:       <code><strong>Upsell Order Bump Offer for WooCommerce</strong></code> makes special offers on checkout page, enabling to increase conversions & AOV in just a single click. <a target="_blank" href="https://wpswings.com/woocommerce-plugins/?utm_source=wpswings-orderbump-shop&utm_medium=orderbump-pro-backend&utm_campaign=shop-page" >Elevate your eCommerce store by exploring more on <strong>WP Swings</strong></a>.
  *
  * Requires at least:       5.5.0
- * Tested up to:            6.6.1
+ * Tested up to:            6.6.2
  * WC requires at least:    6.1.0
- * WC tested up to:         9.2.3
+ * WC tested up to:         9.3.3
  *
  * Requires Plugins: woocommerce
- * Version:           2.4.0
+ * Version:           2.4.1
  * Author:            WP Swings
  * Author URI:        https://wpswings.com/?utm_source=wpswings-official&utm_medium=order-bump-org-backend&utm_campaign=official
  * License:           GPL-3.0
@@ -38,7 +38,27 @@ if ( ! defined( 'WPINC' ) ) {
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
-// HPOS Compatibility and cart and checkout block.
+$activated      = false;
+$active_plugins = get_option( 'active_plugins', array() );
+if ( function_exists( 'is_multisite' ) && is_multisite() ) {
+	$active_network_wide = get_site_option( 'active_sitewide_plugins', array() );
+	if ( ! empty( $active_network_wide ) ) {
+		foreach ( $active_network_wide as $key => $value ) {
+			$active_plugins[] = $key;
+		}
+	}
+	$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
+	if ( file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' ) && in_array( 'woocommerce/woocommerce.php', $active_plugins, true ) ) {
+		$activated = true;
+	}
+} elseif ( file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' ) && in_array( 'woocommerce/woocommerce.php', $active_plugins, true ) ) {
+		$activated = true;
+}
+
+if ( $activated ) {
+
+
+	// HPOS Compatibility and cart and checkout block.
 	add_action(
 		'before_woocommerce_init',
 		function() {
@@ -81,7 +101,7 @@ use Automattic\WooCommerce\Utilities\OrderUtil;
 	/**
 	 * Currently plugin version.
 	 */
-	define( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION', '2.4.0' );
+	define( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION', '2.4.1' );
 
 	$old_pro_present   = false;
 	$installed_plugins = get_plugins();
@@ -412,4 +432,4 @@ use Automattic\WooCommerce\Utilities\OrderUtil;
 			}
 		}
 	}
-
+}
