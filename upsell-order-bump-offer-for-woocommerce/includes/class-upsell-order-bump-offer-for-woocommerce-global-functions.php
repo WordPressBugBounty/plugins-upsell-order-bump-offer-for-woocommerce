@@ -2958,7 +2958,14 @@ function wps_ubo_analyse_and_display_order_bump( $key, $encountered_respective_t
 
 	$allowed_html = wps_ubo_lite_allowed_html();
 
+	
+	if ( '11' != $wps_bump_upsell_selected_template ) {
 		echo wp_kses( $bumphtml, $allowed_html );
+	} else {
+		// Suppress PHPCS warning about escaping output.
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Reason for ignoring the escaping rule.
+		echo $bumphtml; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped.
+	}
 
 	$offer_product = wc_get_product( $bump['id'] );
 
@@ -5783,6 +5790,9 @@ function wps_ubo_lite_bump_offer_html_11( $bump, $encountered_order_bump_id = ''
 		$bump_price_html = $discount_title_percent;
 	}
 
+	$wps_ubo_global_options    = get_option( 'wps_ubo_global_options', wps_ubo_lite_default_global_options() );
+	$wps_ubo_template_adaption = ! empty( $wps_ubo_global_options['wps_ubo_temp_adaption'] ) ? $wps_ubo_global_options['wps_ubo_temp_adaption'] : '';
+
 		/*
 	* Get price html.
 	*/
@@ -6100,7 +6110,7 @@ max-height: 200px;
 	}
 
 	$bumphtml .= '<div class="bump-offer-container">
-        <div class="bump-offer-title">' . esc_attr( $bump_price_html ) . '</div>
+        <div class="bump-offer-title">' . wp_kses_post( $bump_price_html ) . '</div>
         <div class="bump-offer-product">';
 		$bumphtml .= '<img class = "wps_upsell_offer_img" src="' . esc_url( $image ) . '" alt="Product Image">
             <div class="bump-offer-product-details">

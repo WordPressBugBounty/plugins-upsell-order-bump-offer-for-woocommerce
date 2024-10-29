@@ -22,7 +22,7 @@
  * WC tested up to:         9.3.3
  *
  * Requires Plugins: woocommerce
- * Version:           2.4.1
+ * Version:           2.4.2
  * Author:            WP Swings
  * Author URI:        https://wpswings.com/?utm_source=wpswings-official&utm_medium=order-bump-org-backend&utm_campaign=official
  * License:           GPL-3.0
@@ -101,7 +101,7 @@ if ( $activated ) {
 	/**
 	 * Currently plugin version.
 	 */
-	define( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION', '2.4.1' );
+	define( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION', '2.4.2' );
 
 	$old_pro_present   = false;
 	$installed_plugins = get_plugins();
