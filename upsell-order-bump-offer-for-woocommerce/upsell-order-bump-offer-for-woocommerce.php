@@ -17,12 +17,12 @@
  * Description:       <code><strong>Upsell Funnel Builder for WooCommerce</strong></code>helps merchants maximize sales and generate revenue by curating one-click upsell and bump offers!. <a target="_blank" href="https://wpswings.com/woocommerce-plugins/?utm_source=wpswings-orderbump-shop&utm_medium=orderbump-pro-backend&utm_campaign=shop-page" >Elevate your eCommerce store by exploring more on <strong>WP Swings</strong></a>.
  *
  * Requires at least:       5.5.0
- * Tested up to:            6.7.2
+ * Tested up to:            6.8.0
  * WC requires at least:    6.1.0
- * WC tested up to:         9.7.1
+ * WC tested up to:         9.8.2
  *
  * Requires Plugins: woocommerce
- * Version:           3.0.0
+ * Version:           3.0.1
  * Author:            WP Swings
  * Author URI:        https://wpswings.com/?utm_source=wpswings-official&utm_medium=order-bump-org-backend&utm_campaign=official
  * License:           GPL-3.0
@@ -134,7 +134,7 @@ if ( $activated ) {
 	/**
 	 * Currently plugin version.
 	 */
-	define( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION', '3.0.0' );
+	define( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION', '3.0.1' );
 	if ( ! defined( 'WPS_WOCUF_URL_FUNNEL_BUILDER' ) ) {
 		define( 'WPS_WOCUF_URL_FUNNEL_BUILDER', plugin_dir_url( __FILE__ ) );
 	}
@@ -429,15 +429,14 @@ if ( $activated ) {
 				WP_Filesystem();
 
 				global $wp_filesystem;
-			// Create the directory if it doesn't exist.
-			if ( ! $wp_filesystem->is_dir( $plugin_dir ) ) {
-				$wp_filesystem->mkdir( $plugin_dir, 0755 , true );
-			}
+				// Create the directory if it doesn't exist.
+				if ( ! $wp_filesystem->is_dir( $plugin_dir ) ) {
+					$wp_filesystem->mkdir( $plugin_dir, 0755, true );
+				}
 
-
-			// Create the plugin file if it doesn't exist.
-			if ( ! file_exists( $plugin_file ) ) {
-				$plugin_content = '<?php
+				// Create the plugin file if it doesn't exist.
+				if ( ! file_exists( $plugin_file ) ) {
+					$plugin_content = '<?php
 				/*
 				Plugin Name: Woo One Click Upsell Funnel
 				Plugin URI: https://example.com
@@ -447,9 +446,9 @@ if ( $activated ) {
 				Author URI: https://wpswings.com/
 				*/
 				';
-				file_put_contents( $plugin_file, $plugin_content );
+					file_put_contents( $plugin_file, $plugin_content );
+				}
 			}
-		}
 		}
 
 
