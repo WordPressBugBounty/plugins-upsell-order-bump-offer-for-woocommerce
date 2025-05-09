@@ -4,10 +4,10 @@ Contributors: wpswings
 Donate link: https://wpswings.com/
 Tags: Funnel Builder, one click upsell, woocommerce upsell, popup maker, frequently bought together,
 Requires at least: 5.5.0
-Tested up to: 6.8
+Tested up to: 6.8.1
 WC requires at least: 5.5.0
-WC tested up to: 9.8.2
-Stable tag: 3.0.1
+WC tested up to: 9.8.4
+Stable tag: 3.0.2
 Requires PHP: 7.0.0
 License: GPLv3 or later 
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -442,32 +442,34 @@ If the upsell offers are not showing, make sure the:
 = My Question is Not Listed. = 
 Please visit [**WooCommerce Order Bump Knowledge Base**](https://support.wpswings.com/wordpress-plugins-knowledge-base/category/upsell-order-bump-offer-for-woocommerce/?utm_source=order-bump-org-page&utm_medium=referral&utm_campaign=order-bump-kb)
 
-
 == Changelog ==
-= 3.0.1 – Released on 23 April 2025 = 
-* New: Compatibility with WordPress 6.8 and WooCommerce 9.8.2
+
+= 3.0.2 – Released on 09 May 2025 = 
+* New: Compatibility with WordPress (6.8.1) and WooCommerce (9.8.4).
+
+= 3.0.1 – Released on 23 April 2025 =
+* New: Compatibility with WordPress 6.8 and WooCommerce 9.8.2.
 * Enhancement: Improved template appearance on Cart and Checkout pages.
 
-= 3.0.0 – Released on 3 April 2025 = 
+= 3.0.0 – Released on 3 April 2025 =
 * New: Latest WP (6.7.2) and WC (9.7.1) compatibility
 * New: Funnel Schedule
 * New: Global Funnel
-* New: Exclusive Offer 
+* New: Exclusive Offer
 * New: Smart Offer Upgrade
-* New: Pre-Designed Upsell Funnel Templates 
+* New: Pre-Designed Upsell Funnel Templates
 * New: Funnel List
 * New: One Click Upsell Shortcodes
-* New: Payment Gateway Support 
-* New: Exit intent Popup for upsell funnel 
+* New: Payment Gateway Support
+* New: Exit intent Popup for upsell funnel
 * New: Global CSS and JS
-* New: Dynamic Shipping Price on Upsell 
-* New: Upsell Sales Report Tracking 
-* New: GA4 and Facebook Pixel Tracking 
+* New: Dynamic Shipping Price on Upsell
+* New: Upsell Sales Report Tracking
+* New: GA4 and Facebook Pixel Tracking
 * New: Product & Category Based Triggering
 * New: Schedule Offers
-* New: Upsell Templated Customization 
-* New: Page Builder Support
-
+* New: Upsell Templated Customization
+* New: Page Builder Support.
 
 = 2.4.4 – Released on 27 January 2025 = 
 * New: Latest WP (6.7.1) and WC (9.6.0) compatibility.
@@ -664,6 +666,5 @@ Please visit [**WooCommerce Order Bump Knowledge Base**](https://support.wpswing
 
 == Upgrade Notice ==
 
-= 3.0.1 – Released on 23 April 2025 = 
-* New: Compatibility with WordPress 6.8 and WooCommerce 9.8.2
-* Enhancement: Improved template appearance on Cart and Checkout pages.
+= 3.0.2 – Released on 09 March 2025 =
+* New: Compatibility with WordPress (6.8.1) and WooCommerce (9.8.4).
