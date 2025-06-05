@@ -19,10 +19,10 @@
  * Requires at least:       5.5.0
  * Tested up to:            6.8.1
  * WC requires at least:    6.1.0
- * WC tested up to:         9.8.4
+ * WC tested up to:         9.8.5
  *
  * Requires Plugins: woocommerce
- * Version:           3.0.2
+ * Version:           3.0.3
  * Author:            WP Swings
  * Author URI:        https://wpswings.com/?utm_source=wpswings-official&utm_medium=order-bump-org-backend&utm_campaign=official
  * License:           GPL-3.0
@@ -37,6 +37,8 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
+// To Suppress The Notices on text doman.
+add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
 
 $activated      = false;
 $active_plugins = get_option( 'active_plugins', array() );
@@ -114,27 +116,33 @@ if ( $activated ) {
 		 * @return array
 		 */
 		function wps_upsell_lite_is_plugin_active_funnel_builder( $plugin_slug ) {
-
 			if ( empty( $plugin_slug ) ) {
-
 				return false;
 			}
 
 			$active_plugins = (array) get_option( 'active_plugins', array() );
 
-			if ( is_multisite() ) {
-
-				$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
+			// Check regular activation.
+			if ( in_array( $plugin_slug, $active_plugins, true ) ) {
+				return true;
 			}
 
-			return in_array( $plugin_slug, $active_plugins, true ) || array_key_exists( $plugin_slug, $active_plugins );
+			// Check multisite network activation.
+			if ( is_multisite() ) {
+				$network_plugins = (array) get_site_option( 'active_sitewide_plugins', array() );
+				if ( isset( $network_plugins[ $plugin_slug ] ) ) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 
 	/**
 	 * Currently plugin version.
 	 */
-	define( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION', '3.0.2' );
+	define( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION', '3.0.3' );
 	if ( ! defined( 'WPS_WOCUF_URL_FUNNEL_BUILDER' ) ) {
 		define( 'WPS_WOCUF_URL_FUNNEL_BUILDER', plugin_dir_url( __FILE__ ) );
 	}
@@ -244,17 +252,17 @@ if ( $activated ) {
 	 * @since    1.0.0
 	 */
 	function activate_upsell_order_bump_offer_for_woocommerce() {
+		ob_start();
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-upsell-order-bump-offer-for-woocommerce-activator.php';
 		Upsell_Order_Bump_Offer_For_Woocommerce_Activator::activate();
+		ob_end_clean();
 	}
 
 
 	/**
 	 * The file responsible for Upsell Sales by Funnel - Data handling and Stats.
 	 */
-	if ( ! wps_ubo_lite_is_plugin_active( 'woocommerce-one-click-upsell-funnel-pro/woocommerce-one-click-upsell-funnel-pro.php' ) ) {
 		require_once plugin_dir_path( __FILE__ ) . 'reporting/class-wps-upsell-report-sales-by-funnel-bump.php';
-	}
 
 
 	/**
@@ -389,11 +397,13 @@ if ( $activated ) {
 		 * @return void
 		 */
 		function wps_activate_plugin() {
+			 ob_start();
 			if ( ! wps_plugin_exists( 'woo-one-click-upsell-funnel/woocommerce-one-click-upsell-funnel.php' ) ) {
 				update_option( 'wps_manual_create_upsell', 'done' );
 				wps_create_plugin_folder(); // Create the plugin folder and file.
 				wps_activate_created_plugin();
 			}
+			ob_end_clean(); // Discard buffer content.
 		}
 
 

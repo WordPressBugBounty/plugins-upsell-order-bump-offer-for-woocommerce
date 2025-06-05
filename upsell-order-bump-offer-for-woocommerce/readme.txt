@@ -6,8 +6,8 @@ Tags: Funnel Builder, one click upsell, woocommerce upsell, popup maker, frequen
 Requires at least: 5.5.0
 Tested up to: 6.8.1
 WC requires at least: 5.5.0
-WC tested up to: 9.8.4
-Stable tag: 3.0.2
+WC tested up to: 9.8.5
+Stable tag: 3.0.3
 Requires PHP: 7.0.0
 License: GPLv3 or later 
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -16,9 +16,9 @@ Upsell Funnel Builder lets you create Post Purchase Upsell, Order Bumps, One Cli
 
 === Description ===
 
-**UPSELL FUNNEL BUILDER FOR WOOCOMMERCE IS A SALES FUNNEL BUILDER WITH UPSELLING AND CROSS-SELLING THAT LETS THE WOOCOMMERCE MERCHANTS SHOW PRODUCT RECOMMENDATIONS ON THE PRODUCT, CART & CHECKOUT PAGE TO BOOST AOV AND INCREASE SALES.**
+**Upsell Funnel Builder for WooCommerce is a sales funnel builder with upselling and cross-selling that lets woocommerce merchants show post-purchase upsell, order bumps, one-click upsell, cross-sells, frequently bought, and popups and product recommendations on the product, cart and checkout page to boost aov and increase sales.**
 
-The [**WooCommerce Upsell Order Bump**](https://wpswings.com/product/upsell-order-bump-offer-for-woocommerce-pro/?utm_source=order-bump-org&utm_medium=referral&utm_campaign=order-bump-pro) allows store owners to make special offers exclusively on their checkout and thank you pages, enabling them to increase their conversions and Average Order Value. The merchants can create post-purchase upsell and cross-sell offers. This plugin allows merchants to create engaging sales funnels and bump offers that convert.
+The [**WooCommerce Upsell Funnel Builder**](https://wpswings.com/product/upsell-order-bump-offer-for-woocommerce-pro/?utm_source=order-bump-org&utm_medium=referral&utm_campaign=order-bump-pro) allows store owners to make special offers exclusively on their checkout and thank you pages, enabling them to increase their conversions and Average Order Value. The merchants can create post-purchase upsell and cross-sell offers. This plugin allows merchants to create engaging sales funnels and bump offers that convert.
 
 Show your customers an exclusive upsell popup and cross-sell offers at an unbelievable price at the very moment that they are checking out. 
 
@@ -33,7 +33,7 @@ Relevant bump offers can be set for specific targets with WooCommerce Order Bump
 Unlock exclusive upgrades and choose to boost your sales at checkout with our WooCommerce upsell and order bump plugin, the perfect solution for seamless offers and cross-sells. 
 
 
-== ⭐ Salient Features Of Upsell Funnel Builder  ==
+== ⭐ Salient Features Of Upsell Funnel Builder for WooCommerce ==
 
 #### 1) Shortcodes To Build Useful Offer Page Elements
 
@@ -124,13 +124,13 @@ The upsell sales funnel builder creates exclusive offers for the customers, whic
 Build the one-click upsell funnel for WooCommerce with Elementor Page Builder and other top builders available on WordPress. Our plugin allows you to easily create and customize your upsell offer pages without coding knowledge.
 
 
-== LIVE DEMO OF UPSELL ORDER BUMP OFFER PLUGIN ==
+== LIVE DEMO OF FUNNEL BUILDER PLUGIN ==
 
 * [**Upsell Order Bump Offer Frontend Demo**](https://demo.wpswings.com/upsell-order-bump-offer-for-woocommerce-pro/?utm_source=order-bump-org-page&utm_medium=referral&utm_campaign=frontend-demo)
 
 * [**Upsell Order Bump Offer Backend Demo**](https://demo.wpswings.com/upsell-order-bump-offer-for-woocommerce-pro/request-for-personal-demo/?utm_source=order-bump-org-page&utm_medium=referral&utm_campaign=order-bump-backend-demo)
 
-== WITH THE WOOCOMMERCE ORDER BUMP PLUGIN YOU CAN: ==
+== WITH THE WOOCOMMERCE FUNNEL BUILDER PLUGIN YOU CAN: ==
 
 * Use pre-defined shortcodes to create offer page elements.
 * Create unlimited WordPress funnels with an unlimited number of WooCommerce upselling and cross-selling offers.
@@ -149,7 +149,7 @@ Build the one-click upsell funnel for WooCommerce with Elementor Page Builder an
 
 
 
-== 🤝 UPSELL BUMP PLUGIN COMPATIBILITIES ==
+== 🤝 UPSELL FUNNEL BUILDER PLUGIN COMPATIBILITIES ==
 
 * Compatibility with  [**WooCommerce Currency Switcher**](https://wordpress.org/plugins/woocommerce-currency-switcher/) 
 
@@ -157,7 +157,7 @@ Build the one-click upsell funnel for WooCommerce with Elementor Page Builder an
 
 * Compatibility with  [**Side Cart WooCommerce plugin**](https://wordpress.org/plugins/side-cart-woocommerce/) –  enhances the user experience, and enables customers to stay on the same page and handle the items in the cart.
 
-* Upsell Order Bump is fully compatible with WooCommerce High-Performance Order Storage (HPOS).
+* Upsell Funnel Builder is fully compatible with WooCommerce High-Performance Order Storage (HPOS).
 
 * Compatibility with the [**Ultimate Gift Cards for WooCommerce**](https://wordpress.org/plugins/woo-gift-cards-lite/) plugin that allows your customers to redeem their gift cards.
 
@@ -218,7 +218,7 @@ Combine the Power of Order Bump Offers and One Click Upsell Funnels for Your Woo
 “The “Upsell Order Bump Offer for WooCommerce” plugin has truly elevated my business! With its seamless integration and ease of use, I’ve been able to generate additional revenue at the checkout. But what truly sets this plugin apart is the exceptional support. Always fast, always helpful – a real must-have for any WooCommerce store! Highly recommended!” 
 
 
-== ❤️ SUPPORT ==
+==❤️ SUPPORT ==
 
 If you need support or have questions, kindly use our online chat window [**here**](http://www.wpswings.com/?utm_source=order-bump-org-page&utm_medium=referral&utm_campaign=support) or connect with us and then [**Generate a ticket.**](https://wpswings.com/submit-query/?utm_source=order-bump-org-page&utm_medium=referral&utm_campaign=submit-query)
 
@@ -444,6 +444,9 @@ Please visit [**WooCommerce Order Bump Knowledge Base**](https://support.wpswing
 
 == Changelog ==
 
+= 3.0.3 – Released on 05 May 2025 =
+* New: Compatibility with WordPress (6.8.1) and WooCommerce (9.8.5).
+
 = 3.0.2 – Released on 09 May 2025 = 
 * New: Compatibility with WordPress (6.8.1) and WooCommerce (9.8.4).
 
@@ -666,5 +669,5 @@ Please visit [**WooCommerce Order Bump Knowledge Base**](https://support.wpswing
 
 == Upgrade Notice ==
 
-= 3.0.2 – Released on 09 March 2025 =
-* New: Compatibility with WordPress (6.8.1) and WooCommerce (9.8.4).
+= 3.0.3 – Released on 05 May 2025 =
+* New: Compatibility with WordPress (6.8.1) and WooCommerce (9.8.5).

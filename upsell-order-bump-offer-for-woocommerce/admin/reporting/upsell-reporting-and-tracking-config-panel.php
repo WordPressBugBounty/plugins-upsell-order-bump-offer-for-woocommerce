@@ -47,9 +47,11 @@ $nonce_overview = wp_create_nonce( 'view_upsell_tracking_over' ); // Create nonc
 	</div>
 
 	<div class="wps_wocuf_pro_header">
-		<div class="wps_wocuf_pro_setting_title"><?php esc_html_e( 'Upsell Funnel Builder for WooCommerce', 'upsell-order-bump-offer-for-woocommerce' ); ?></div>
-
-
+		<?php if ( wps_is_plugin_active_with_version( 'upsell-order-bump-offer-for-woocommerce-pro/upsell-order-bump-offer-for-woocommerce-pro.php', '3.0.0' ) ) { ?>
+		<div class="wps_wocuf_pro_setting_title"><?php esc_html_e( 'Upsell Funnel Builder for WooCommerce Pro', 'upsell-order-bump-offer-for-woocommerce' ); ?></div>
+		<?php } else { ?>
+			<div class="wps_wocuf_pro_setting_title"><?php esc_html_e( 'Upsell Funnel Builder for WooCommerce', 'upsell-order-bump-offer-for-woocommerce' ); ?></div>
+		<?php } ?>
 	</div>
 
 	<nav class="nav-tab-wrapper woo-nav-tab-wrapper">
