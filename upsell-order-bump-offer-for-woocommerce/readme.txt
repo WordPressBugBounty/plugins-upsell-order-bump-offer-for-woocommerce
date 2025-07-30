@@ -3,11 +3,11 @@
 Contributors: wpswings
 Donate link: https://wpswings.com/
 Tags: Funnel Builder, one click upsell, woocommerce upsell, popup maker, frequently bought together
-Requires at least: 5.5.0
-Tested up to: 6.8.1
-WC requires at least: 5.5.0
-WC tested up to: 9.9.4
-Stable tag: 3.0.4
+Requires at least: 6.7.0
+Tested up to: 6.8.2
+WC requires at least: 6.5.0
+WC tested up to: 10.0.4
+Stable tag: 3.0.5
 Requires PHP: 7.0.0
 License: GPLv3 or later 
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -450,6 +450,11 @@ Please visit [**WooCommerce Order Bump Knowledge Base**](https://support.wpswing
 
 == Changelog ==
 
+= 3.0.5 – Released on 30 July 2025 =
+* New: Compatibility with WordPress (6.8.2) and WooCommerce (10.0.4)
+* Fix: Product Edit Tab Switch Condition.
+
+
 = 3.0.4 – Released on 19 June 2025 =
 * Enhancement: Improved license handling code for the Pro version.
 * New: Added an Admin UI tab for the "Features" section.
@@ -680,7 +685,6 @@ Please visit [**WooCommerce Order Bump Knowledge Base**](https://support.wpswing
 
 == Upgrade Notice ==
 
-= 3.0.4 – Released on 19 June 2025 =
-* Enhancement: Improved license handling code for the Pro version.
-* New: Added an Admin UI tab for the "Features" section.
-* New: Compatibility with WordPress (6.8.1) and WooCommerce (9.9.4).
+= 3.0.5 – Released on 30 July 2025 =
+* New: Compatibility with WordPress (6.8.2) and WooCommerce (10.0.4)
+* Fix: Product Edit Tab Switch Condition.
