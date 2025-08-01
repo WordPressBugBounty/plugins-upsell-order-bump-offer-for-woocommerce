@@ -22,7 +22,7 @@
  * WC tested up to:         10.0.4
  *
  * Requires Plugins: woocommerce
- * Version:           3.0.5
+ * Version:           3.0.6
  * Author:            WP Swings
  * Author URI:        https://wpswings.com/?utm_source=wpswings-official&utm_medium=order-bump-org-backend&utm_campaign=official
  * License:           GPL-3.0
@@ -142,7 +142,7 @@ if ( $activated ) {
 	/**
 	 * Currently plugin version.
 	 */
-	define( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION', '3.0.5' );
+	define( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION', '3.0.6' );
 	if ( ! defined( 'WPS_WOCUF_URL_FUNNEL_BUILDER' ) ) {
 		define( 'WPS_WOCUF_URL_FUNNEL_BUILDER', plugin_dir_url( __FILE__ ) );
 	}
@@ -514,6 +514,21 @@ if ( $activated ) {
 			}
 		}
 
+		/**
+		 * This function is used to check PAR pro plugin is active or not.
+		 *
+		 * @return bool
+		 */
+		function wps_upsell_funnel_builder_is_pdf_pro_plugin_active() {
+
+			$flag = false;
+			if ( is_plugin_active( 'upsell-order-bump-offer-for-woocommerce-pro/upsell-order-bump-offer-for-woocommerce-pro.php' ) ) {
+
+				$flag = true;
+			}
+			return $flag;
+		}
+
 
 
 		/**
@@ -627,7 +642,7 @@ if ( $activated ) {
 			if ( isset( $screen->id ) ) {
 				$pagescreen = $screen->id;
 			}
-			if ( 'toplevel_page_upsell-order-bump-offer-for-woocommerce-setting' === $pagescreen || 'plugins' === $pagescreen || 'order-bump_page_upsell-order-bump-offer-for-woocommerce-reporting' == $pagescreen ) {
+			if ( 'toplevel_page_upsell-order-bump-offer-for-woocommerce-setting' === $pagescreen || 'plugins' === $pagescreen || 'order-bump_page_upsell-order-bump-offer-for-woocommerce-reporting' == $pagescreen || 'dashboard' == $pagescreen ) {
 				$banner_id = get_option( 'wps_wgm_notify_new_banner_id', false );
 				if ( isset( $banner_id ) && '' !== $banner_id ) {
 					$hidden_banner_id            = get_option( 'wps_wgm_notify_hide_baneer_notification', false );
