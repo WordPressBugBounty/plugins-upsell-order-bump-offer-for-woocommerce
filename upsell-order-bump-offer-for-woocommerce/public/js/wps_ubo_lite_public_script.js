@@ -327,7 +327,7 @@ jQuery(document).ready(function ($) {
             }
         });
 
-        console.log(variation_selected); //No data is coming.
+        console.log(variation_selected); //No data is coming.);
 
         jQuery.ajax({
             type: 'post',
@@ -436,7 +436,7 @@ jQuery(document).ready(function ($) {
             bump_discount = object.closest('.wps_upsell_offer_main_wrapper').find('.offer_shown_discount').val();
             bump_target_cart_key = object.closest('.wps_upsell_offer_main_wrapper').find('.target_id_cart_key').val();
             smart_offer_upgrade = object.closest('.wps_upsell_offer_main_wrapper').find('.order_bump_smo').val();
-            
+
             // Add product to cart.
             jQuery.ajax({
 
@@ -845,7 +845,7 @@ jQuery(document).ready(function ($) {
     // Onclick outside the div close the popup.
     $('body').click(function (e) {
 
-        if (e.target.className.search('wps_bump_popup_wrapper') == 0) {
+        if (e.target.className.toString().search('wps_bump_popup_wrapper') == 0) {
 
             order_bump_index = e.target.className.replace('wps_bump_popup_wrapper wps_bump_popup_', '');
 

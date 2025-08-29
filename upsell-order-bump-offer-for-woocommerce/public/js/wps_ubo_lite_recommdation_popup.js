@@ -143,7 +143,8 @@ jQuery( document ).ready(
 								action: 'add_to_cart_recommendation',
 								wps_product_id : productId,
 								wps_product_price : product_price_id,
-								wps_target_product_id : wps_target_product_id,
+								wps_target_product_id: wps_target_product_id,
+								wps_variation_product_id: wps_variation_product_id,
 							},
 							success: function (msg) {
 
