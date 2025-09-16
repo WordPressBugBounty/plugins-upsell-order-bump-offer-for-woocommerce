@@ -66,7 +66,7 @@ class Upsell_Order_Bump_Offer_For_Woocommerce {
 		if ( defined( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION' ) ) {
 			$this->version = UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION;
 		} else {
-			$this->version = '3.0.4';
+			$this->version = '3.0.8';
 		}
 		$this->plugin_name = 'upsell-order-bump-offer-for-woocommerce';
 
@@ -197,7 +197,6 @@ class Upsell_Order_Bump_Offer_For_Woocommerce {
 			$this->loader->add_action( 'wp_ajax_seach_products_for_funnel', $plugin_admin, 'seach_products_for_funnel' );
 			$this->loader->add_action( 'wp_ajax_search_product_categories_for_funnel', $plugin_admin, 'search_product_categories_for_funnel' );
 
-			// On clickupsell Funnel Hooks admin.
 			// Dismiss Elementor inactive notice.
 			$this->loader->add_action( 'wp_ajax_wps_upsell_dismiss_elementor_inactive_notice', $plugin_admin, 'dismiss_elementor_inactive_notice' );
 
@@ -247,6 +246,7 @@ class Upsell_Order_Bump_Offer_For_Woocommerce {
 				$this->loader->add_action( 'woocommerce_product_after_variable_attributes', $plugin_admin, 'upsell_add_custom_price_to_variations', 10, 3 );
 				$this->loader->add_action( 'woocommerce_save_product_variation', $plugin_admin, 'upsell_save_custom_price_variations', 10, 2 );
 				}
+				$this->loader->add_action( 'wp_ajax_wps_ubo_create_label', $plugin_admin, 'wps_ubo_create_label_callback' );
 			}
 
 			$this->loader->add_filter( 'woocommerce_admin_reports', $plugin_admin, 'add_upsell_reporting' );

@@ -28,6 +28,7 @@ if ( isset( $_POST['wps_upsell_bump_common_settings_save_general'] ) ) {
 
 	// Enable Plugin.
 	$wps_bump_upsell_global_options['wps_bump_enable_plugin'] = ! empty( $_POST['wps_bump_enable_plugin'] ) ? 'on' : 'off';
+	$wps_bump_upsell_global_options['wps_bump_enable_campaign_labels'] = ! empty( $_POST['wps_upsell_bump_enable_campaign_labels'] ) ? 'on' : 'off';
 
 	$wps_bump_upsell_global_options['wps_bump_skip_offer'] = ! empty( $_POST['wps_bump_skip_offer'] ) ? sanitize_text_field( wp_unslash( $_POST['wps_bump_skip_offer'] ) ) : 'yes';
 
@@ -39,9 +40,13 @@ if ( isset( $_POST['wps_upsell_bump_common_settings_save_general'] ) ) {
 
 	$wps_bump_upsell_global_options['wps_ubo_abandoned_cart'] = ! empty( $_POST['wps_ubo_abandoned_cart'] ) ? sanitize_text_field( wp_unslash( $_POST['wps_ubo_abandoned_cart'] ) ) : 'no';
 
+	$wps_bump_upsell_global_options['wps_ubo_product_offer_strip'] = ! empty( $_POST['wps_ubo_product_offer_strip'] ) ? sanitize_text_field( wp_unslash( $_POST['wps_ubo_product_offer_strip'] ) ) : 'no';
+
 	// SAVE GLOBAL OPTIONS.
 	update_option( 'wps_ubo_global_options', $wps_bump_upsell_global_options );
+
 	$wps_smart_already_purchased = ! empty( $_POST['wps_ubo_offer_purchased_earlier'] ) ? sanitize_text_field( wp_unslash( $_POST['wps_ubo_offer_purchased_earlier'] ) ) : 'no';
+
 	$wps_upsell_global_options = get_option( 'wps_upsell_global_options', array() );
 	// V3.5.0 :: Smart Skip If already purchased start For Upsell Funnel.
 	$wps_smart_skip_val = '';
@@ -50,6 +55,7 @@ if ( isset( $_POST['wps_upsell_bump_common_settings_save_general'] ) ) {
 	} else {
 		$wps_smart_skip_val = 'off';
 	}
+
 	$wps_upsell_global_options['wps_wocuf_pro_enable_smart_skip'] = $wps_smart_skip_val;
 	$wps_upsell_global_options['skip_similar_offer'] = ! empty( $_POST['wps_bump_skip_offer'] ) ? sanitize_text_field( wp_unslash( $_POST['wps_bump_skip_offer'] ) ) : 'yes';
 	;
@@ -81,6 +87,8 @@ $wps_ubo_global_options = get_option( 'wps_ubo_global_options', wps_ubo_lite_def
 $wps_one_click_upsell_on = get_option( 'wps_upsell_lite_global_options', array() );
 $wps_bump_upsell_global_options = get_option( 'wps_ubo_global_options', array() );
 
+
+
 // Check if the 'wps_bump_enable_plugin' key exists and its value is 'on'.
 if ( isset( $wps_bump_upsell_global_options['wps_bump_enable_plugin'] ) &&
 	( $wps_bump_upsell_global_options['wps_bump_enable_plugin'] ) === 'on' ) {
@@ -98,6 +106,9 @@ update_option( 'wps_upsell_lite_global_options', $wps_one_click_upsell_on );
 // By default plugin will be enabled.
 $wps_bump_enable_plugin = ! empty( $wps_ubo_global_options['wps_bump_enable_plugin'] ) ? $wps_ubo_global_options['wps_bump_enable_plugin'] : '';
 
+// By default plugin will be enabled.
+$wps_bump_enable_campaign_labels = ! empty( $wps_ubo_global_options['wps_bump_enable_campaign_labels'] ) ? $wps_ubo_global_options['wps_bump_enable_campaign_labels'] : '';
+
 
 // Bump Offer skip.
 $wps_bump_enable_skip = ! empty( $wps_ubo_global_options['wps_bump_skip_offer'] ) ? $wps_ubo_global_options['wps_bump_skip_offer'] : '';
@@ -106,6 +117,8 @@ $wps_bump_enable_skip = ! empty( $wps_ubo_global_options['wps_bump_skip_offer'] 
 $bump_offer_price_html = ! empty( $wps_ubo_global_options['wps_ubo_offer_price_html'] ) ? $wps_ubo_global_options['wps_ubo_offer_price_html'] : 'regular_to_offer';
 
 $bump_offer_preorder_skip = ! empty( $wps_ubo_global_options['wps_ubo_offer_purchased_earlier'] ) ? $wps_ubo_global_options['wps_ubo_offer_purchased_earlier'] : 'no';
+
+$wps_ubo_product_offer_strip_enable = ! empty( $wps_ubo_global_options['wps_ubo_product_offer_strip'] ) ? $wps_ubo_global_options['wps_ubo_product_offer_strip'] : 'no';
 
 $wps_abandoned_cart_enable = ! empty( $wps_ubo_global_options['wps_ubo_abandoned_cart'] ) ? $wps_ubo_global_options['wps_ubo_abandoned_cart'] : 'no';
 ?>
@@ -127,12 +140,12 @@ $wps_abandoned_cart_enable = ! empty( $wps_ubo_global_options['wps_ubo_abandoned
 				<tr valign="top">
 
 					<th scope="row" class="titledesc">
-						<label for="wps_bump_enable_plugin  "><?php esc_html_e( 'Enable Upsell Order Bumps', 'upsell-order-bump-offer-for-woocommerce' ); ?></label>
+						<label for="wps_bump_enable_plugin  "><?php esc_html_e( 'Enable Funnel Builder', 'upsell-order-bump-offer-for-woocommerce' ); ?></label>
 					</th>
 
 					<td class="forminp forminp-text">
 						<?php
-						$attribute_description = esc_html__( 'Enable Upsell Order Bump Offer plugin.', 'upsell-order-bump-offer-for-woocommerce' );
+						$attribute_description = esc_html__( 'Enable Upsell Funnel Builder plugin.', 'upsell-order-bump-offer-for-woocommerce' );
 
 						wps_ubo_lite_help_tip( $attribute_description );
 						?>
@@ -147,6 +160,35 @@ $wps_abandoned_cart_enable = ! empty( $wps_ubo_global_options['wps_ubo_abandoned
 				</tr>
 				<!-- Enable Plugin end. -->
 
+				<!-- Enable Campaign Labels. -->
+				<tr valign="top">
+
+					<th scope="row" class="titledesc">
+						<label for="wps_bump_enable_plugin  "><?php esc_html_e( 'Enable Campaign Labels', 'upsell-order-bump-offer-for-woocommerce' ); ?></label>
+					</th>
+
+					<td class="forminp forminp-text">
+						<?php
+						$attribute_description = esc_html__( 'Enable Campaign Labels for Upsell Funnel Offers and Order Bump Offers.', 'upsell-order-bump-offer-for-woocommerce' );
+
+						wps_ubo_lite_help_tip( $attribute_description );
+						?>
+
+						<label for="wps_upsell_bump_enable_plugin_span1" class="wps_upsell_bump_enable_plugin_label wps_bump_enable_plugin_support">
+
+							<input id="wps_upsell_bump_enable_plugin_span1" class="wps_upsell_bump_enable_plugin_input" type="checkbox" <?php echo ( 'on' === $wps_bump_enable_campaign_labels ) ? "checked='checked'" : ''; ?> name="wps_upsell_bump_enable_campaign_labels">
+							<span class="wps_upsell_bump_enable_plugin_span1"></span>
+
+						</label>
+						<?php if('on' === $wps_bump_enable_campaign_labels){ ?>
+						<span class="wps_upsell_bump_campaign_create">
+						<button class="button wps_upsell_bump_campaign_select_button" id = 'wps_ubo_open_popup'><?php esc_html_e( 'Add Labels', 'upsell-order-bump-offer-for-woocommerce' ); ?></button>
+						</span>
+						<?php } ?>
+					</td>
+				</tr>
+				<!-- Enable campaign labels end. -->
+
 				<!-- Skip offer start. -->
 				<tr valign="top">
 
@@ -156,7 +198,7 @@ $wps_abandoned_cart_enable = ! empty( $wps_ubo_global_options['wps_ubo_abandoned
 
 					<td class="forminp forminp-text">
 						<?php
-						$attribute_description = esc_html__( 'Skip Bump offer if offer product is already present in cart.', 'upsell-order-bump-offer-for-woocommerce' );
+						$attribute_description = esc_html__( 'Skip Upsell Funnel Offer or Order Bump Offer if offer product is already present in cart.', 'upsell-order-bump-offer-for-woocommerce' );
 						wps_ubo_lite_help_tip( $attribute_description );
 						?>
 
@@ -232,7 +274,7 @@ $wps_abandoned_cart_enable = ! empty( $wps_ubo_global_options['wps_ubo_abandoned
 					<td class="forminp forminp-text">
 
 						<?php
-						$attribute_description = esc_html__( 'Skip the Order Bump offer for those customers who have already purchased the offer product anytime before in previous orders.', 'upsell-order-bump-offer-for-woocommerce' );
+						$attribute_description = esc_html__( 'Skip the Order Bump Offer or Upsell Funnel Offer for those customers who have already purchased the offer product anytime before in previous orders.', 'upsell-order-bump-offer-for-woocommerce' );
 						wps_ubo_lite_help_tip( $attribute_description );
 						?>
 						<label class="wps-upsell-smart-pre-order-skip" for="wps_ubo_offer_purchased_earlier">
@@ -242,6 +284,27 @@ $wps_abandoned_cart_enable = ! empty( $wps_ubo_global_options['wps_ubo_abandoned
 					</td>
 				</tr>
 				<!-- Pre-order feature skip end. -->
+				<!-- Product Strip Offer start. -->
+				<tr valign="top">
+					<th scope="row" class="titledesc">
+
+						<span class="wps_ubo_premium_strip"><?php esc_html_e( 'Pro', 'upsell-order-bump-offer-for-woocommerce' ); ?></span>
+
+						<label for="wps_ubo_offer_purchased_earlier"><?php esc_html_e( 'Product Offer Strip', 'upsell-order-bump-offer-for-woocommerce' ); ?></label>
+					</th>
+
+					<td class="forminp forminp-text">
+						<?php
+						$attribute_description = esc_html__( 'Add the offer strip on the product to let know the customer that the product is have offer using dynamic color and timer.', 'upsell-order-bump-offer-for-woocommerce' );
+						wps_ubo_lite_help_tip( $attribute_description );
+						?>
+						<label class="wps-upsell-product-offer-strip" for="wps_ubo_product_offer_strip">
+							<input class="upsell-product-offer-strip-wrap" type='checkbox' <?php echo wps_ubo_lite_if_pro_exists() && ! empty( $wps_ubo_product_offer_strip_enable) && 'yes' === $wps_ubo_product_offer_strip_enable ? 'checked' : ''; ?> id='wps_ubo_product_offer_strip' value='yes' name='wps_ubo_product_offer_strip'>
+							<span class="upsell-product-offer-strip-btn"></span>
+						</label>
+					</td>
+				</tr>
+			<!-- Product Strip Offer end. -->
 
 				<!-- Abandoned Cart Plugin start. -->
 				<tr valign="top">
@@ -280,6 +343,7 @@ $wps_abandoned_cart_enable = ! empty( $wps_ubo_global_options['wps_ubo_abandoned
 <!-- Adding go pro popup here. -->
 
 <?php wps_ubo_go_pro( 'pro' ); ?>
+<?php wps_ubo_add_popup_button(); ?>
 
 <!-- Update required Popup -->
 <div class="wps_ubo_update_popup_wrapper">

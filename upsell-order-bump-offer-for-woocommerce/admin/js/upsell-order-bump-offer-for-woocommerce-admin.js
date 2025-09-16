@@ -1,37 +1,33 @@
 (function ($) {
   "use strict";
   $(document).ready(function () {
-    $(document).ready(function () {
 
       const targetElement = document.querySelector(".wps-bump-offer-container");
 
-        // Scroll the page to the target element
         if (targetElement) {
           targetElement.scrollIntoView({
-            behavior: 'smooth', // Smooth scroll
-            block: 'start'      // Align to the top of the viewport
+            behavior: 'smooth',
+            block: 'start'
           });
         }
-      // Function to check and update the visibility of the setting
+    
       function togglePopUpSetting() {
         if ($("#wps_Offer_With_Pop_Up_id_pro_1").is(":checked")) {
-          $(".wps_target_bump_for_popup").show(800); // Show the setting if "Offer With Pop-Up" is selected
+          $(".wps_target_bump_for_popup").show(800);
         } else {
-          $(".wps_target_bump_for_popup").hide(800); // Hide the setting if "Offer Without Pop-Up" is selected
+          $(".wps_target_bump_for_popup").hide(800);
         }
       }
 
-      // Run the function initially based on the current radio button selection
+      // Run the function initially based on the current radio button selection.
       togglePopUpSetting();
 
       // Listen for changes to the radio buttons.
       $('input[name="wps_bump_popup_bump_offer"]').on("change", function () {
-        togglePopUpSetting(); // Update visibility when a new radio button is selected.
+        togglePopUpSetting();
       });
-    });
 
-    jQuery(document).ready(function ($) {
-      // Event delegation to handle dynamic elements
+      // Event delegation to handle dynamic elements.
       $(document).on("click", ".wps-ob_temp-alpha", function () {
         var $checkbox = $(this).find("#wps-ob_temp-alpha-check");
         if ($checkbox.is(":checked")) {
@@ -42,17 +38,15 @@
           $(this).addClass("wps-ob_checked");
         }
       });
-    });
 
     var myDiv = document.getElementById("wps_ubo_lite_save_changes_bump");
+    let isHidden = false;
 
-    let isHidden = false; // Flag to track if the div is hidden
-
-    // Function to check if the user has reached the bottom of the page
+    // Function to check if the user has reached the bottom of the page.
     function isBottomOfPage() {
-      const windowHeight =
+        const windowHeight =
         window.innerHeight || document.documentElement.clientHeight;
-      const documentHeight = Math.max(
+        const documentHeight = Math.max(
         document.body.scrollHeight,
         document.body.offsetHeight,
         document.documentElement.clientHeight,
@@ -65,10 +59,10 @@
         window.pageYOffset ||
         document.documentElement.scrollTop;
 
-      return documentHeight - (scrollPosition + windowHeight) < 50; // Adjust the value as needed
+      return documentHeight - (scrollPosition + windowHeight) < 50;
     }
 
-    // Function to hide the div
+    // Function to hide the div.
     function hideDiv() {
       if (myDiv && myDiv.style) {
         myDiv.style.display = "none";
@@ -76,7 +70,7 @@
       }
     }
 
-    // Function to show the div
+    // Function to show the div.
     function showDiv() {
       if (myDiv && myDiv.style) {
         myDiv.style.display = "inline-flex";
@@ -84,7 +78,7 @@
       }
     }
 
-    // Listen for the scroll event
+    // Listen for the scroll event.
     window.addEventListener("scroll", function () {
       if (isBottomOfPage() && !isHidden) {
         hideDiv();
@@ -93,7 +87,7 @@
       }
     });
 
-    var wps_is_pro_active = woocommerce_admin.is_pro_active;
+    var wps_is_pro_active = wps_ubo_lite_banner_offer_section_obj.is_pro_active;
     if (1 == wps_is_pro_active) {
       $(".wps_ubo_premium_strip").hide();
     }
@@ -322,16 +316,16 @@
       // Template chnage css and design.
 
       e.preventDefault();
-      $(".wps_ubo_template").val(temp_id); // Select temp id
-      $(".wps_ubo_selected_template").val(temp_id); // Select temp id
-      $(".wps_ubo_animation_loader").css("display", "flex"); // Loader
+      $(".wps_ubo_template").val(temp_id);
+      $(".wps_ubo_selected_template").val(temp_id);
+      $(".wps_ubo_animation_loader").css("display", "flex");
 
       // For Scroll back.
       var href_bump_current_url = window.location.href;
       href_bump_current_url += "&wps-bump-template-section=" + temp_id;
       window.history.replaceState({}, "", href_bump_current_url);
 
-      $("#wps_upsell_bump_creation_setting_save").click(); // Save bump
+      $("#wps_upsell_bump_creation_setting_save").click();
       $(".wps_ubo_skin_popup_wrapper").css("display", "none");
     });
 
@@ -351,14 +345,12 @@
     // Available Template preview - Ends.
 
     // Text Fields Preview.
-
     $(".wps_upsell_offer_input_type").on("change paste keyup", function () {
       var text_id = $(this).attr("text_id");
       var msg = ""; // Check which field in changed
       var price = $(".offer_shown_discount").val().split("+");
 
       if (text_id == "fixed") {
-        // Fixed Price Text.
 
         if (price[1] == "fixed") {
           var fixed = "$" + price[0];
@@ -377,7 +369,6 @@
       }
 
       if (text_id == "percent") {
-        // % Price Text.
 
         if (price[1] == "%") {
           var percent = price[0] + "%";
@@ -825,7 +816,7 @@ jQuery(document).ready(function ($) {
    * Scripts after v1.0.2
    */
   $(
-    "#wps_ubo_enable_fluentcrm_switch,#wps_ubo_offer_purchased_earlier,#wps_ubo_enable_popup_exit_intent_switch,#wps_enable_fbt_upsell_feature,#wps_ubo_offer_fbt_location_set,#wps_enable_cart_upsell_location,#wps_ubo_offer_timer,#wps_ubo_offer_product_image_slider,#wps_enable_cart_upsell, #wps_ubo_offer_replace_target, #wps_ubo_offer_global_funnel, #wps_ubo_offer_exclusive_limit, #wps_ubo_offer_meta_forms, #wps_enable_red_arrow_feature,.wps_bump_offer_popup_case ,#wps_ubo_offer_restrict_coupons, #wps_ubo_offer_ab_method,#wps_upsell_bump_priority,#wps_upsell_bump_min_cart, #wps_upsell_bump_min_cart,#wps_ubo_img_width_slider_pop_up,#wps_ubo_img_height_slider_pop_up,#wps_ubo_select_accept_offer_acolor_pop_up"
+    "#wps_ubo_enable_fluentcrm_switch,#wps_ubo_product_offer_strip,#wps_ubo_offer_purchased_earlier,#wps_ubo_enable_popup_exit_intent_switch,#wps_enable_fbt_upsell_feature,#wps_ubo_offer_fbt_location_set,#wps_enable_cart_upsell_location,#wps_ubo_offer_timer,#wps_ubo_offer_product_image_slider,#wps_enable_cart_upsell, #wps_ubo_offer_replace_target, #wps_ubo_offer_global_funnel, #wps_ubo_offer_exclusive_limit, #wps_ubo_offer_meta_forms, #wps_enable_red_arrow_feature,.wps_bump_offer_popup_case ,#wps_ubo_offer_restrict_coupons, #wps_ubo_offer_ab_method,#wps_upsell_bump_priority,#wps_upsell_bump_min_cart, #wps_upsell_bump_min_cart,#wps_ubo_img_width_slider_pop_up,#wps_ubo_img_height_slider_pop_up,#wps_ubo_select_accept_offer_acolor_pop_up"
   ).on("click", function (e) {
     // Add popup to unlock pro features.
     var pro_status = document.getElementById("wps_ubo_pro_status");
@@ -1008,12 +999,6 @@ jQuery(document).ready(function ($) {
     });
   });
 
-  var pro_status = document.getElementById("wps_ubo_pro_status");
-  // if (null != pro_status) {
-  // 	document.getElementById( "wps_Offer_Without_Pop_Up_id_org_2" ).checked = true;
-  // 	document.getElementById( "wps_Offer_With_Pop_Up_id_org_2" ).checked = false;
-  // }
-
   var wps_selected_template_id = $("#wps_templete_select_id").val();
   if (
     6 == wps_selected_template_id ||
@@ -1053,9 +1038,6 @@ jQuery(document).ready(function ($) {
 //Banner Image.
 jQuery(document).ready(function ($) {
   $(document).on("click", "#dismiss-banner", function (e) {
-    // if (wps_ubo_lite_banner_offer_section_obj.check_pro_activate) {
-    //   jQuery(document).find(".wps-offer-notice").hide();
-    // } else {
     e.preventDefault();
     var data = {
       action: "wps_sfw_dismiss_notice_banner",
@@ -1069,7 +1051,6 @@ jQuery(document).ready(function ($) {
         window.location.reload();
       },
     });
-    // }
   });
 });
 
@@ -1118,7 +1099,6 @@ jQuery(document).ready(function () {
     //For the new template 10 js.
     var wps_ob_con = jQuery(".wps-ob-st");
     if (wps_ob_con.width() < 700) {
-      // wps_ob_con.addClass('ob_cont-full');
     }
   }, 1000);
 });
@@ -1183,7 +1163,7 @@ jQuery(document).ready(function () {
           borderWidth: 2,
           hoverBorderWidth: 3,
 
-          // Pop-out effect: offset the hovered slice
+          // Pop-out effect: offset the hovered slice.
           offset: (ctx) => (ctx.active ? 12 : 0),
         },
       ],
@@ -1228,7 +1208,7 @@ jQuery(document).ready(function () {
     // Create the Pie chart
     new Chart(ctx, config);
 
-    // Toggle functionality for Show/Hide
+    // Toggle functionality for Show/Hide.
     const toggleButton = document.getElementById("toggleButton" + key);
     const chartContainer = document.getElementById("chartContainer" + key);
 
@@ -1318,7 +1298,7 @@ jQuery(document).ready(function () {
           borderWidth: 2,
           hoverBorderWidth: 3,
 
-          // Pop-out effect: offset the hovered slice
+          // Pop-out effect: offset the hovered slice.
           offset: (ctx) => (ctx.active ? 12 : 0),
         },
       ],
@@ -1383,4 +1363,82 @@ jQuery(document).ready(function () {
         : "Show Chart For " + wps_funnel_name;
     });
   });
+});
+
+// JavaScript to handle popup and AJAX request.
+jQuery(document).ready(function($) {
+    $('#wps_ubo_open_popup').click(function(e) {
+        e.preventDefault();
+      $('#wps_ubo_label_popup').addClass('show');
+      $('.wps_ubo_popup_wrap').addClass('show');
+      $('.wps_ubo_popup_wrap').show();
+    });
+
+    // Close the popup when the close button is clicked
+    $('#wps_ubo_close_popup').click(function() {
+      $('#wps_ubo_label_popup').removeClass('show');
+       $('.wps_ubo_popup_wrap').removeClass('show');
+    });
+  
+    $(document).click(function(event) {
+        if (!$(event.target).closest('.wps-ubo-popup-content').length && !$(event.target).is('#wps_ubo_open_popup')) {
+          $('#wps_ubo_label_popup').removeClass('show'); // Close the popup when clicking outside.
+            $('.wps_ubo_popup_wrap').removeClass('show');
+        }
+    });
+
+// Handle the form submission for creating the label.
+$('#wps_ubo_create_label').click(function() {
+    var labelName = $('#wps_ubo_label_name').val();
+    var labelColor = $('#wps_ubo_label_color').val();
+
+    if (labelName && labelColor) {
+        $.ajax({
+            url: wps_ubo_lite_banner_offer_section_obj.ajaxurl,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                action: 'wps_ubo_create_label',
+                wps_ubo_label_name: labelName,
+                wps_ubo_label_color: labelColor,
+                nonce: wps_ubo_lite_banner_offer_section_obj.nonce
+            },
+            success: function (response) {
+                console.log(response);
+                if (response.success) {
+                    alert(response.data.message || 'Label created successfully!');
+                    $('#wps_ubo_label_popup').removeClass('show');
+                    $('.wps_ubo_popup_wrap').hide();
+                } else {
+                    alert(response.data.message || 'Error creating label. Please try again.');
+                }
+            },
+            error: function () {
+                console.log('AJAX error occurred.');
+            }
+        });
+    } else {
+        alert('Please provide both label name and color.');
+    }
+});
+  
+    const $checkbox = $('#wps_upsell_bump_enable_plugin_span1');
+    const $campaignCreate = $('.wps_upsell_bump_campaign_create');
+
+    // Initial check on page load
+    if ($checkbox.is(':checked')) {
+        $campaignCreate.show();
+    } else {
+        $campaignCreate.hide();
+    }
+
+    // Toggle on change
+    $checkbox.on('change', function () {
+        if ($(this).is(':checked')) {
+            $campaignCreate.show();
+        } else {
+            $campaignCreate.hide();
+        }
+    });
+
 });

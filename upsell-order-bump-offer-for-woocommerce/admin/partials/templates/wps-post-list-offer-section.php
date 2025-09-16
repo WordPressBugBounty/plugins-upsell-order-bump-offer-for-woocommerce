@@ -71,6 +71,12 @@ if ( ! empty( $wps_wocuf_pro_funnels_list ) ) {
 }
 
 ?>
+<!-- Add section to trigger Go Pro popup. -->
+<?php if ( ! empty( $wps_wocuf_pro_funnels_list ) && count( $wps_wocuf_pro_funnels_list ) ) : ?>
+
+	<input type="hidden" class="wps_ubo_lite_saved_funnel" value="<?php echo ( count( $wps_wocuf_pro_funnels_list ) ); ?>">
+
+<?php endif; ?>
 
 <div class="wps_wocuf_pro_funnels_list">
 
@@ -98,12 +104,21 @@ if ( ! empty( $wps_wocuf_pro_funnels_list ) ) {
 				$offers_count = ! empty( $value['wps_wocuf_products_in_offer'] ) ? $value['wps_wocuf_products_in_offer'] : array();
 
 				$offers_count = count( $offers_count );
+				$label_campaign = isset( $value['wps_bump_label_campaign'] ) ? $value['wps_bump_label_campaign'] : '';
+
+				list( $color_hex, $label_name ) = array_pad( explode( '/',  $label_campaign, 2 ), 2, '' );
 
 				?>
 
 				<tr>
 					<!-- Funnel Name -->
-					<td><a class="wps_upsell_funnel_list_name" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=creation-setting&sub_tab=post-list-offer-section&funnel_id=<?php echo esc_html( $key ); ?>"><?php echo esc_html( $value['wps_wocuf_funnel_name'] ); ?></a></td>
+					<td>
+				<?php $wps_ubo_global_options = get_option( 'wps_ubo_global_options', wps_ubo_lite_default_global_options() ); ?>
+				 <?php $wps_bump_enable_campaign_labels = ! empty( $wps_ubo_global_options['wps_bump_enable_campaign_labels'] ) ? $wps_ubo_global_options['wps_bump_enable_campaign_labels'] : ''; ?>
+				<?php if('on' === $wps_bump_enable_campaign_labels){ ?>
+						<span class="wps_label_color" style="background-color: <?php echo esc_attr( $color_hex ); ?>;"><?php echo esc_html( $label_name ); ?></span>
+						<?php } ?>
+						<a class="wps_upsell_funnel_list_name" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=creation-setting&sub_tab=post-list-offer-section&funnel_id=<?php echo esc_html( $key ); ?>"><?php echo esc_html( $value['wps_wocuf_funnel_name'] ); ?></a></td>
 
 					<!-- Funnel Status -->
 					<td>

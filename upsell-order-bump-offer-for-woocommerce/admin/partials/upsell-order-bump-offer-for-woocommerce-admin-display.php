@@ -55,14 +55,14 @@ do_action( 'wps_ubo_lite_tab_active' );
 			<?php if ( 'global-setting' === $wps_ubo_lite_active_tab ) : ?>
 
 				<div class="nav-sub-tabs">
-					<a class="sub-tab <?php echo esc_html( 'pre-global-sect' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=global-setting&sub_tab=pre-global-sect"><?php esc_html_e( 'Pre Bump', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+					<a class="sub-tab <?php echo esc_html( 'pre-global-sect' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=global-setting&sub_tab=pre-global-sect"><?php esc_html_e( 'Order Bump', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
 					<?php if ( wps_ubo_lite_is_plugin_active( 'woocommerce-one-click-upsell-funnel-pro/woocommerce-one-click-upsell-funnel-pro.php' ) && ! wps_is_plugin_active_with_version( 'upsell-order-bump-offer-for-woocommerce-pro/upsell-order-bump-offer-for-woocommerce-pro.php', '3.0.0' ) ) { ?>
-						<a class="sub-tab <?php echo esc_html( 'post-global-sect' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=wps-wocuf-pro-setting"><?php esc_html_e( 'Post Bump', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+						<a class="sub-tab <?php echo esc_html( 'post-global-sect' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=wps-wocuf-pro-setting"><?php esc_html_e( 'Upsell Funnel', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
 						<?php } elseif ( wps_ubo_lite_is_plugin_active( 'woocommerce-one-click-upsell-funnel-pro/woocommerce-one-click-upsell-funnel-pro.php' ) || wps_is_plugin_active_with_version( 'upsell-order-bump-offer-for-woocommerce-pro/upsell-order-bump-offer-for-woocommerce-pro.php', '3.0.0' ) ) { ?>
-						<a class="sub-tab <?php echo esc_html( 'post-global-sect' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=global-setting&sub_tab=post-global-sect"><?php esc_html_e( 'Post Bump', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+						<a class="sub-tab <?php echo esc_html( 'post-global-sect' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=global-setting&sub_tab=post-global-sect"><?php esc_html_e( 'Upsell Funnel', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
 
 					<?php } else { ?>
-						<a class="sub-tab <?php echo esc_html( 'post-global-sect' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=global-setting&sub_tab=post-global-sect"><?php esc_html_e( 'Post Bump', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+						<a class="sub-tab <?php echo esc_html( 'post-global-sect' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=global-setting&sub_tab=post-global-sect"><?php esc_html_e( 'Upsell Funnel', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
 					<?php } ?>
 
 				</div>
@@ -79,8 +79,12 @@ do_action( 'wps_ubo_lite_tab_active' );
 			<?php if ( 'order-bump-section' === $wps_ubo_lite_active_tab ) : ?>
 
 				<div class="nav-sub-tabs">
-					<a class="sub-tab <?php echo esc_html( 'pre-list-offer-section' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=order-bump-section&sub_tab=pre-list-offer-section"><?php esc_html_e( 'Pre Bump List', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
-					<a class="sub-tab <?php echo esc_html( 'pre-save-offer-section' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=order-bump-section&sub_tab=pre-save-offer-section"><?php esc_html_e( 'Save', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+					<a class="sub-tab <?php echo esc_html( 'pre-list-offer-section' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=order-bump-section&sub_tab=pre-list-offer-section"><?php esc_html_e( 'Order Bump List', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+				<?php if ( wps_ubo_lite_is_plugin_active( 'upsell-order-bump-offer-for-woocommerce-pro/upsell-order-bump-offer-for-woocommerce-pro.php' ) ) { ?>
+					<a class="sub-tab <?php echo esc_html( 'pre-save-offer-section' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=order-bump-section&sub_tab=pre-save-offer-section"><?php esc_html_e( 'Create', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+<?php } else { ?>
+		<a class="sub-tab wps_ubo_lite_bump_create_button <?php echo esc_html( 'pre-save-offer-section' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="#"><?php esc_html_e( 'Create', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+<?php } ?>
 				</div>
 			<?php endif; ?>
 		</div>
@@ -90,19 +94,23 @@ do_action( 'wps_ubo_lite_tab_active' );
 		<!-- One Click Section Tab start here --->
 		<div class="wps_main_global_wrapper">
 			<?php if ( wps_ubo_lite_is_plugin_active( 'woocommerce-one-click-upsell-funnel-pro/woocommerce-one-click-upsell-funnel-pro.php' ) && ! wps_is_plugin_active_with_version( 'upsell-order-bump-offer-for-woocommerce-pro/upsell-order-bump-offer-for-woocommerce-pro.php', '3.0.0' ) ) { ?>
-				<a class="nav-tab <?php echo esc_html( 'one-click-section' === $wps_ubo_lite_active_tab ? 'nav-tab-active' : '' ); ?>" href="?page=wps-wocuf-pro-setting&tab=funnels-list"><?php esc_html_e( 'One Click Setting', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+				<a class="nav-tab <?php echo esc_html( 'one-click-section' === $wps_ubo_lite_active_tab ? 'nav-tab-active' : '' ); ?>" href="?page=wps-wocuf-pro-setting&tab=funnels-list"><?php esc_html_e( 'Upsell Funnel Setting', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
 			<?php } elseif ( wps_ubo_lite_is_plugin_active( 'woocommerce-one-click-upsell-funnel-pro/woocommerce-one-click-upsell-funnel-pro.php' ) || wps_is_plugin_active_with_version( 'upsell-order-bump-offer-for-woocommerce-pro/upsell-order-bump-offer-for-woocommerce-pro.php', '3.0.0' ) ) { ?>
-				<a class="nav-tab <?php echo esc_html( 'one-click-section' === $wps_ubo_lite_active_tab ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=one-click-section&sub_tab=post-list-offer-section"><?php esc_html_e( 'One Click Setting', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+				<a class="nav-tab <?php echo esc_html( 'one-click-section' === $wps_ubo_lite_active_tab ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=one-click-section&sub_tab=post-list-offer-section"><?php esc_html_e( 'Upsell Funnel Setting', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
 			<?php } else { ?>
-<a class="nav-tab <?php echo esc_html( 'one-click-section' === $wps_ubo_lite_active_tab ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=one-click-section&sub_tab=post-list-offer-section"><?php esc_html_e( 'One Click Setting', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+<a class="nav-tab <?php echo esc_html( 'one-click-section' === $wps_ubo_lite_active_tab ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=one-click-section&sub_tab=post-list-offer-section"><?php esc_html_e( 'Upsell Funnel Setting', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
 			<?php } ?>
 
 			<!-- Sub-tabs under One Click Section Tab -->
 			<?php if ( 'one-click-section' === $wps_ubo_lite_active_tab ) : ?>
 
 				<div class="nav-sub-tabs">
-					<a class="sub-tab <?php echo esc_html( 'post-list-offer-section' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=one-click-section&sub_tab=post-list-offer-section"><?php esc_html_e( 'Post Bump List', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
-					<a class="sub-tab <?php echo esc_html( 'post-save-offer-section' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=one-click-section&sub_tab=post-save-offer-section"><?php esc_html_e( 'Save', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+					<a class="sub-tab <?php echo esc_html( 'post-list-offer-section' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=one-click-section&sub_tab=post-list-offer-section"><?php esc_html_e( 'Upsell Funnel List', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+				<?php if ( wps_ubo_lite_is_plugin_active( 'upsell-order-bump-offer-for-woocommerce-pro/upsell-order-bump-offer-for-woocommerce-pro.php' ) ) { ?>
+					<a class="sub-tab <?php echo esc_html( 'post-save-offer-section' === $_GET['sub_tab'] ? 'nav-tab-active' : '' ); ?>" href="?page=upsell-order-bump-offer-for-woocommerce-setting&tab=one-click-section&sub_tab=post-save-offer-section"><?php esc_html_e( 'Create', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+					<?php } else { ?>
+								<a class="sub-tab wps_ubo_lite_bump_create_button" href="#"><?php esc_html_e( 'Create', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+						<?php } ?>
 				</div>
 			<?php endif; ?>
 		</div>
@@ -389,6 +397,24 @@ do_action( 'wps_ubo_lite_tab_active' );
 
 	<p><?php esc_html_e( 'Regarding any issue, query or feature request for Order Bump Offers.', 'upsell-order-bump-offer-for-woocommerce' ); ?></p>
 	<div class="wps_ubo_lite_skype_setting"><span class="dashicons dashicons-admin-generic"></span></div>
+	<?php if ( wps_ubo_lite_is_plugin_active( 'upsell-order-bump-offer-for-woocommerce-pro/upsell-order-bump-offer-for-woocommerce-pro.php' ) ) { ?>
+	<hr>
+	<div class="wps_ubo_lite_skype_connect_title">
+		<?php esc_html_e( 'Need Expert Help with WooCommerce?', 'upsell-order-bump-offer-for-woocommerce' ); ?>
+	</div>
+
+	<a class="button" target="_blank" href="https://wpswings.com/woocommerce-services/">
+		<img src="<?php echo esc_url( UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_URL . 'admin/resources/icons/Services.svg' ); ?>" alt="WooCommerce Services">
+		<?php esc_html_e( 'Explore Services', 'upsell-order-bump-offer-for-woocommerce' ); ?>
+	</a>
+
+	<p>
+		<?php esc_html_e( 'Looking for customization, support, or new features for Order Bump Offers? Our WooCommerce experts are here to help you achieve more.', 'upsell-order-bump-offer-for-woocommerce' ); ?>
+	</p>
+	<div class="wps_ubo_lite_skype_setting">
+		<span class="dashicons dashicons-admin-generic"></span>
+	</div>
+	<?php } ?>
 </div>
 
 

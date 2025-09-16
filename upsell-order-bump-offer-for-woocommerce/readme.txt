@@ -7,7 +7,7 @@ Requires at least: 6.7.0
 Tested up to: 6.8.2
 WC requires at least: 6.5.0
 WC tested up to: 10.1.2
-Stable tag: 3.0.7
+Stable tag: 3.0.8
 Requires PHP: 7.4
 License: GPLv3 or later 
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -61,9 +61,10 @@ Create unlimited upsells for woocommerce offers using the WooCommerce upsell plu
 
 == ⭐ Salient Features Of Upsell Funnel Builder for WooCommerce ==
 
-#### 1) Page Builder Support to Build Responsive Upsell Offers
+#### 1) Labels For Different Kinds Of Offers 
 
-Build the one-click upsell funnel for WooCommerce with Elementor Page Builder and other top builders available on WordPress. Our plugin allows you to easily create and customize your upsell offer pages without coding knowledge.
+Merchants run different offers daily. Offers like upselling, cross-selling, festive season deals, Halloween specials, and the list goes on. Having a label functionality dedicated to differentiating these offers helps the merchants. 
+
 
 #### 2) Shortcodes To Build Useful Offer Page Elements
 
@@ -149,6 +150,10 @@ Create global one-click funnels that trigger independently without needing targe
 
 The upsell sales funnel builder creates exclusive offers for the customers, which will be shown to customers only once, based on the order email. Such one-click upsell offers garner higher conversion rates.
 
+
+#### 23) Page Builder Support to Build Responsive Upsell Offers
+
+Build the one-click upsell funnel for WooCommerce with Elementor Page Builder and other top builders available on WordPress. Our plugin allows you to easily create and customize your upsell offer pages without coding knowledge.
 
 
 
@@ -481,6 +486,11 @@ If the upsell offers are not showing, make sure the:
 Please visit [**WooCommerce Order Bump Knowledge Base**](https://support.wpswings.com/wordpress-plugins-knowledge-base/category/upsell-order-bump-offer-for-woocommerce/?utm_source=order-bump-org-page&utm_medium=referral&utm_campaign=order-bump-kb)
 
 == Changelog ==
+
+= 3.0.8 – Released on 16 Sep 2025 =
+* New: Add labels to the post and pre-funnel offer 
+* New: Compatibility with the latest WP 6.8.2 and WC 10.1.2 
+
 = 3.0.7 – Released on 29 August 2025 =
 * Enhancement: Pictorial Representation of the post and pre-funnel report 
 * Enhancement: UI upgrade of A/B Testing Report 
@@ -725,7 +735,6 @@ Please visit [**WooCommerce Order Bump Knowledge Base**](https://support.wpswing
 
 == Upgrade Notice ==
 
-= 3.0.7 – Released on 29 August 2025 =
-* Enhancement: Pictorial Representation of the post and pre-funnel report 
-* Enhancement: UI upgrade of A/B Testing Report 
-* New: Compatibility with WordPress 6.8.2 and WooCommerce 10.1.2
+= 3.0.8 – Released on 16 Sep 2025 =
+* New: Add labels to the post and pre-funnel offer.
+* New: Compatibility with the latest WP 6.8.2 and WC 10.1.2.

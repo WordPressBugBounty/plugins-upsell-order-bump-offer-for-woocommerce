@@ -118,7 +118,7 @@ if ( isset( $_POST['wps_upsell_bump_creation_setting_save'] ) ) {
 	$wps_upsell_new_bump['wps_upsell_offer_image']        = ! empty( $_POST['wps_upsell_offer_image'] ) ? absint( sanitize_text_field( wp_unslash( $_POST['wps_upsell_offer_image'] ) ) ) : '';
 	$wps_upsell_new_bump['wps_upsell_bump_priority']      = ! empty( $_POST['wps_upsell_bump_priority'] ) ? sanitize_text_field( wp_unslash( $_POST['wps_upsell_bump_priority'] ) ) : '';
 	$wps_upsell_new_bump['wps_upsell_bump_exclude_roles'] = ! empty( $_POST['wps_upsell_bump_exclude_roles'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['wps_upsell_bump_exclude_roles'] ) ) : '';
-
+	$wps_upsell_new_bump['wps_bump_label_campaign']        = ! empty( $_POST['wps_bump_label_campaign'] ) ? sanitize_text_field( wp_unslash( $_POST['wps_bump_label_campaign'] ) ) : '';
 	// When Bump is saved for the first time so load default Design Settings.
 	if ( empty( $_POST['parent_border_type'] ) ) {
 
@@ -296,7 +296,6 @@ $editable_roles = apply_filters( 'wps_upsell_order_bump_editable_roles', $all_ro
 				$bump_priority = ! empty( $wps_upsell_bumps_list[ $wps_upsell_bump_id ]['wps_upsell_bump_priority'] ) ? sanitize_text_field( $wps_upsell_bumps_list[ $wps_upsell_bump_id ]['wps_upsell_bump_priority'] ) : '';
 
 				$min_cart_value = ! empty( $wps_upsell_bumps_list[ $wps_upsell_bump_id ]['wps_upsell_bump_min_cart'] ) ? sanitize_text_field( $wps_upsell_bumps_list[ $wps_upsell_bump_id ]['wps_upsell_bump_min_cart'] ) : 0;
-
 				?>
 
 				<!-- Bump Header start.-->
@@ -516,6 +515,46 @@ $editable_roles = apply_filters( 'wps_upsell_order_bump_editable_roles', $all_ro
 					</td>
 				</tr>
 				<!-- Exclude roles ends. -->
+
+
+			 <?php $wps_ubo_global_options = get_option( 'wps_ubo_global_options', wps_ubo_lite_default_global_options() ); ?>
+				 <?php $wps_bump_enable_campaign_labels = ! empty( $wps_ubo_global_options['wps_bump_enable_campaign_labels'] ) ? $wps_ubo_global_options['wps_bump_enable_campaign_labels'] : ''; ?>
+				<?php if ( 'on' === $wps_bump_enable_campaign_labels ) { ?>
+				<tr valign="top">
+					<th scope="row" class="titledesc">
+
+						<label for="wps_ubo_offer_replace_target"><?php esc_html_e( 'Set Campaign label', 'upsell-order-bump-offer-for-woocommerce' ); ?></label>
+					</th>
+
+					<td class="forminp forminp-text">
+
+					<?php
+					$attribute_description = esc_html__( 'This feature allows you to set the campaign label for the order bump offer.', 'upsell-order-bump-offer-for-woocommerce' );
+					wps_ubo_lite_help_tip( $attribute_description );
+
+					// Retrieve the global options. Use an empty array as a default fallback.
+					$wps_bump_upsell_global_options = get_option( 'wps_ubo_global_options', array() );
+
+					// if the key doesn't exist.
+					$labels = isset( $wps_bump_upsell_global_options['wps_bump_label'] ) ? (array) $wps_bump_upsell_global_options['wps_bump_label'] : array();
+					$wps_bump_label_campaign = ! empty( $wps_upsell_bumps_list[ $wps_upsell_bump_id ]['wps_bump_label_campaign'] ) ? sanitize_text_field( $wps_upsell_bumps_list[ $wps_upsell_bump_id ]['wps_bump_label_campaign'] ) : '';
+					wps_render_campaign_label_select(
+						array(
+							'id'          => 'wps_bump_label_campaign_select',
+							'name'        => 'wps_bump_label_campaign',
+							'options'     => $labels,
+							'value'       => $wps_bump_label_campaign,
+							'placeholder' => 'Select a campaign label',
+							'width'       => '320px',
+						)
+					);
+					?>
+
+
+				</td>
+				</tr>
+				<?php } ?>
+
 
 				<!-- Schedule your Bump start. -->
 				<tr valign="top">
