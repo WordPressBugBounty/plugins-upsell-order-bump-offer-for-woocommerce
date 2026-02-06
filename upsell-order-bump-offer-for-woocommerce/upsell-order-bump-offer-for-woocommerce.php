@@ -17,12 +17,12 @@
  * Description:       <code><strong>Upsell Funnel Builder for WooCommerce</strong></code>helps merchants maximize sales and generate revenue by curating one-click upsell and bump offers!. <a target="_blank" href="https://wpswings.com/woocommerce-plugins/?utm_source=wpswings-orderbump-shop&utm_medium=orderbump-pro-backend&utm_campaign=shop-page" >Elevate your eCommerce store by exploring more on <strong>WP Swings</strong></a>.
  *
  * Requires at least:       6.7.0
- * Tested up to:            6.8.2
+ * Tested up to:            6.9.0
  * WC requires at least:    6.5.0
- * WC tested up to:         10.1.2
+ * WC tested up to:         10.4.3
  *
  * Requires Plugins: woocommerce
- * Version:           3.0.8
+ * Version:           3.1.1
  * Author:            WP Swings
  * Author URI:        https://wpswings.com/?utm_source=wpswings-official&utm_medium=order-bump-org-backend&utm_campaign=official
  * License:           GPL-3.0
@@ -40,25 +40,28 @@ use Automattic\WooCommerce\Utilities\OrderUtil;
 // To Suppress The Notices on text doman.
 add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
 
-$activated      = false;
-$active_plugins = get_option( 'active_plugins', array() );
+$wps_ubo_activated      = false;
+$wps_ubo_active_plugins = get_option( 'active_plugins', array() );
+
 if ( function_exists( 'is_multisite' ) && is_multisite() ) {
 	$active_network_wide = get_site_option( 'active_sitewide_plugins', array() );
 	if ( ! empty( $active_network_wide ) ) {
 		foreach ( $active_network_wide as $key => $value ) {
-			$active_plugins[] = $key;
+			$wps_ubo_active_plugins[] = $key;
 		}
 	}
-	$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
-	if ( file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' ) && in_array( 'woocommerce/woocommerce.php', $active_plugins, true ) ) {
-		$activated = true;
+
+	$wps_ubo_active_plugins = array_merge( $wps_ubo_active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
+
+	if ( file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' ) && in_array( 'woocommerce/woocommerce.php', $wps_ubo_active_plugins, true ) ) {
+		$wps_ubo_activated = true;
 	}
-} elseif ( file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' ) && in_array( 'woocommerce/woocommerce.php', $active_plugins, true ) ) {
-	$activated = true;
+
+} elseif ( file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' ) && in_array( 'woocommerce/woocommerce.php', $wps_ubo_active_plugins, true ) ) {
+	$wps_ubo_activated = true;
 }
 
-if ( $activated ) {
-
+if ( $wps_ubo_activated ) {
 
 	// HPOS Compatibility and cart and checkout block.
 	add_action(
@@ -88,14 +91,14 @@ if ( $activated ) {
 			return false;
 		}
 
-		$active_plugins = (array) get_option( 'active_plugins', array() );
+		$wps_ubo_active_plugins = (array) get_option( 'active_plugins', array() );
 
 		if ( is_multisite() ) {
 
-			$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
+			$wps_ubo_active_plugins = array_merge( $wps_ubo_active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
 		}
 
-		return in_array( $plugin_slug, $active_plugins, true ) || array_key_exists( $plugin_slug, $active_plugins );
+		return in_array( $plugin_slug, $wps_ubo_active_plugins, true ) || array_key_exists( $plugin_slug, $wps_ubo_active_plugins );
 	}
 
 
@@ -120,10 +123,10 @@ if ( $activated ) {
 				return false;
 			}
 
-			$active_plugins = (array) get_option( 'active_plugins', array() );
+			$wps_ubo_active_plugins = (array) get_option( 'active_plugins', array() );
 
 			// Check regular activation.
-			if ( in_array( $plugin_slug, $active_plugins, true ) ) {
+			if ( in_array( $plugin_slug, $wps_ubo_active_plugins, true ) ) {
 				return true;
 			}
 
@@ -142,7 +145,7 @@ if ( $activated ) {
 	/**
 	 * Currently plugin version.
 	 */
-	define( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION', '3.0.8' );
+	define( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION', '3.1.1' );
 	if ( ! defined( 'WPS_WOCUF_URL_FUNNEL_BUILDER' ) ) {
 		define( 'WPS_WOCUF_URL_FUNNEL_BUILDER', plugin_dir_url( __FILE__ ) );
 	}
@@ -262,7 +265,7 @@ if ( $activated ) {
 	/**
 	 * The file responsible for Upsell Sales by Funnel - Data handling and Stats.
 	 */
-		require_once plugin_dir_path( __FILE__ ) . 'reporting/class-wps-upsell-report-sales-by-funnel-bump.php';
+	require_once plugin_dir_path( __FILE__ ) . 'reporting/class-wps-upsell-report-sales-by-funnel-bump.php';
 
 
 	/**
@@ -281,7 +284,7 @@ if ( $activated ) {
 	 * @since    1.0.0
 	 */
 	function deactivate_upsell_order_bump_offer_for_woocommerce() {
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class-upsell-order-bump-offer-for-woocommerce-deactivator.php';
+		 require_once plugin_dir_path( __FILE__ ) . 'includes/class-upsell-order-bump-offer-for-woocommerce-deactivator.php';
 		Upsell_Order_Bump_Offer_For_Woocommerce_Deactivator::deactivate();
 	}
 
@@ -292,7 +295,7 @@ if ( $activated ) {
 	 * @since    1.0.0
 	 */
 	function wps_ubo_lite_plugin_activation() {
-		$activation['status']  = true;
+		 $activation['status']  = true;
 		$activation['message'] = '';
 
 		// Dependant plugin.
@@ -377,8 +380,9 @@ if ( $activated ) {
 		 * @return void
 		 */
 		function wps_redirect_to_bump_list() {
-			if ( isset( $_GET['tab'] ) && 'bump-list' == $_GET['tab'] ) {
-				wp_redirect( admin_url( 'admin.php?page=upsell-order-bump-offer-for-woocommerce-setting&tab=order-bump-section&sub_tab=pre-list-offer-section' ) );
+			$tab = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : '';
+			if ( 'bump-list' === $tab ) {
+				wp_safe_redirect( esc_url_raw( admin_url( 'admin.php?page=upsell-order-bump-offer-for-woocommerce-setting&tab=order-bump-section&sub_tab=pre-list-offer-section' ) ) );
 				exit;
 			}
 		}
@@ -397,7 +401,7 @@ if ( $activated ) {
 		 * @return void
 		 */
 		function wps_activate_plugin() {
-			 ob_start();
+			ob_start();
 			if ( ! wps_plugin_exists( 'woo-one-click-upsell-funnel/woocommerce-one-click-upsell-funnel.php' ) ) {
 				update_option( 'wps_manual_create_upsell', 'done' );
 				wps_create_plugin_folder(); // Create the plugin folder and file.
@@ -506,10 +510,10 @@ if ( $activated ) {
 			$plugin_path = 'woo-one-click-upsell-funnel/woocommerce-one-click-upsell-funnel.php';
 
 			if ( wps_plugin_exists( $plugin_path ) ) {
-				$active_plugins = get_option( 'active_plugins', array() );
-				if ( ! in_array( $plugin_path, $active_plugins, true ) ) {
-					$active_plugins[] = $plugin_path;
-					update_option( 'active_plugins', $active_plugins );
+				$wps_ubo_active_plugins = get_option( 'active_plugins', array() );
+				if ( ! in_array( $plugin_path, $wps_ubo_active_plugins, true ) ) {
+					$wps_ubo_active_plugins[] = $plugin_path;
+					update_option( 'active_plugins', $wps_ubo_active_plugins );
 				}
 			}
 		}
@@ -520,7 +524,6 @@ if ( $activated ) {
 		 * @return bool
 		 */
 		function wps_upsell_funnel_builder_is_pdf_pro_plugin_active() {
-
 			$flag = false;
 			if ( is_plugin_active( 'upsell-order-bump-offer-for-woocommerce-pro/upsell-order-bump-offer-for-woocommerce-pro.php' ) ) {
 
@@ -570,7 +573,8 @@ if ( $activated ) {
 			}
 
 			// To hide Plugin activated notice.
-			if ( ! empty( $_GET['activate'] ) ) {
+			$is_activate = isset( $_GET['activate'] ) ? sanitize_text_field( wp_unslash( $_GET['activate'] ) ) : '';
+			if ( ! empty( $is_activate ) ) {
 
 				unset( $_GET['activate'] );
 			}
@@ -594,7 +598,7 @@ if ( $activated ) {
 			<?php if ( 'woo_inactive' === $wps_ubo_lite_plugin_activation['message'] ) : ?>
 
 				<div class="notice notice-error is-dismissible wps-notice">
-					<p><strong><?php esc_html_e( 'WooCommerce', 'upsell-order-bump-offer-for-woocommerce' ); ?></strong><?php esc_html_e( ' is not activated, Please activate WooCommerce first to activate ', 'upsell-order-bump-offer-for-woocommerce' ); ?><strong><?php esc_html_e( 'Upsell Order Bump Offer for WooCommerce', 'upsell-order-bump-offer-for-woocommerce' ); ?></strong><?php esc_html_e( '.', 'upsell-order-bump-offer-for-woocommerce' ); ?></p>
+					<p><strong><?php esc_html_e( 'upsell-order-bump-offer-for-woocommerce', 'upsell-order-bump-offer-for-woocommerce' ); ?></strong><?php esc_html_e( ' is not activated, Please activate WooCommerce first to activate ', 'upsell-order-bump-offer-for-woocommerce' ); ?><strong><?php esc_html_e( 'Upsell Order Bump Offer for WooCommerce', 'upsell-order-bump-offer-for-woocommerce' ); ?></strong><?php esc_html_e( '.', 'upsell-order-bump-offer-for-woocommerce' ); ?></p>
 				</div>
 
 				<?php
@@ -639,10 +643,12 @@ if ( $activated ) {
 		 */
 		function wps_banner_notification_plugin_html() {
 			$screen = get_current_screen();
-			if ( isset( $screen->id ) ) {
-				$pagescreen = $screen->id;
+			if ( ! $screen || ! isset( $screen->id ) ) {
+				return;
 			}
-			if ( 'toplevel_page_upsell-order-bump-offer-for-woocommerce-setting' === $pagescreen || 'plugins' === $pagescreen || 'order-bump_page_upsell-order-bump-offer-for-woocommerce-reporting' == $pagescreen || 'dashboard' == $pagescreen ) {
+
+			$pagescreen = $screen->id;
+			if ( 'toplevel_page_upsell-order-bump-offer-for-woocommerce-setting' === $pagescreen || 'plugins' === $pagescreen || 'order-bump_page_upsell-order-bump-offer-for-woocommerce-reporting' === $pagescreen || 'dashboard' === $pagescreen ) {
 				$banner_id = get_option( 'wps_wgm_notify_new_banner_id', false );
 				if ( isset( $banner_id ) && '' !== $banner_id ) {
 					$hidden_banner_id            = get_option( 'wps_wgm_notify_hide_baneer_notification', false );
@@ -730,7 +736,8 @@ if ( $activated ) {
 		 */
 		function wps_wocfo_hpos_update_meta_data_funnel_builder( $id, $meta_key, $meta_value ) {
 
-			if ( 'shop_order' === OrderUtil::get_order_type( $id ) && wps_wocfo_is_hpos_enabled_funnel_builder() ) {
+			$order_type = class_exists( OrderUtil::class ) ? OrderUtil::get_order_type( $id ) : '';
+			if ( 'shop_order' === $order_type && wps_wocfo_is_hpos_enabled_funnel_builder() ) {
 
 				$order = wc_get_order( $id );
 				$order->update_meta_data( $meta_key, $meta_value );
@@ -762,7 +769,8 @@ if ( $activated ) {
 		 */
 		function wps_wocfo_hpos_delete_meta_data_funnel_builder( $id, $meta_key ) {
 
-			if ( 'shop_order' === OrderUtil::get_order_type( $id ) && wps_wocfo_is_hpos_enabled_funnel_builder() ) {
+			$order_type = class_exists( OrderUtil::class ) ? OrderUtil::get_order_type( $id ) : '';
+			if ( 'shop_order' === $order_type && wps_wocfo_is_hpos_enabled_funnel_builder() ) {
 
 				$order = wc_get_order( $id );
 				$order->delete_meta_data( $meta_key );
@@ -796,7 +804,8 @@ if ( $activated ) {
 		function wps_wocfo_hpos_get_meta_data_funnel_builder( $id, $meta_key, $bool ) {
 
 			$meta_value = '';
-			if ( 'shop_order' === OrderUtil::get_order_type( $id ) && wps_wocfo_is_hpos_enabled_funnel_builder() ) {
+			$order_type = class_exists( OrderUtil::class ) ? OrderUtil::get_order_type( $id ) : '';
+			if ( 'shop_order' === $order_type && wps_wocfo_is_hpos_enabled_funnel_builder() ) {
 
 				$order      = wc_get_order( $id );
 				$meta_value = $order->get_meta( $meta_key, $bool );
@@ -824,10 +833,9 @@ if ( $activated ) {
 		}
 
 		$screen = get_current_screen();
-		if ( isset( $screen->id ) ) {
-			$pagescreen = $screen->id;
-		}
-		if ( ( isset( $_GET['page'] ) && 'toplevel_page_upsell-order-bump-offer-for-woocommerce-setting' === $_GET['page'] ) ) {
+		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
+
+		if ( 'toplevel_page_upsell-order-bump-offer-for-woocommerce-setting' === $page ) {
 			$banner_id = get_option( 'wps_wgm_notify_new_banner_id', false );
 			if ( isset( $banner_id ) && '' !== $banner_id ) {
 				$hidden_banner_id            = get_option( 'wps_wgm_notify_hide_baneer_notification', false );

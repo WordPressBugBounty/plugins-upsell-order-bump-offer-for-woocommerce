@@ -1,5 +1,18 @@
 <?php
 /**
+ * Exit if accessed directly.
+ *
+ * @since      1.0.0
+ * @package    Upsell_Order_Bump_Offer_For_Woocommerce
+ * @subpackage Upsell_Order_Bump_Offer_For_Woocommerce/includes
+ * @author     WP Swings <webmaster@wpswings.com>
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
  * The admin-specific functionality of the plugin.
  *
  * @link       https://wpswings.com/?utm_source=wpswings-official&utm_medium=order-bump-org-backend&utm_campaign=official
@@ -15,7 +28,7 @@
  * @since    1.0.0
  */
 function wps_ubo_lite_if_pro_exists() {
-	// Check if pro plugin exists.
+	 // Check if pro plugin exists.
 	if ( wps_ubo_lite_is_plugin_active( 'upsell-order-bump-offer-for-woocommerce-pro/upsell-order-bump-offer-for-woocommerce-pro.php' ) ) {
 
 		return true;
@@ -654,7 +667,7 @@ function wps_ubo_lite_offer_template_9() {
  * @since    1.0.0
  */
 function wps_ubo_lite_offer_template_10() {
-	// Template 10.
+	 // Template 10.
 	$wps_bump_upsell_global_css['parent_border_type']      = 'solid';
 	$wps_bump_upsell_global_css['parent_border_color']     = '#000000';
 	$wps_bump_upsell_global_css['parent_background_color'] = '#ffffff';
@@ -698,7 +711,7 @@ function wps_ubo_lite_offer_template_10() {
  * @since    1.0.0
  */
 function wps_ubo_lite_offer_template_11() {
-	// Template 10.
+	 // Template 10.
 	$wps_bump_upsell_global_css['parent_border_type']      = 'solid';
 	$wps_bump_upsell_global_css['parent_border_color']     = '#000000';
 	$wps_bump_upsell_global_css['parent_background_color'] = '#ffffff';
@@ -742,7 +755,7 @@ function wps_ubo_lite_offer_template_11() {
  * @since    1.0.0
  */
 function wps_ubo_lite_offer_template_12() {
-	// Template 10.
+	 // Template 10.
 	$wps_bump_upsell_global_css['parent_border_type']      = 'solid';
 	$wps_bump_upsell_global_css['parent_border_color']     = '#000000';
 	$wps_bump_upsell_global_css['parent_background_color'] = '#d6eab9';
@@ -824,6 +837,16 @@ function wps_ubo_lite_offer_default_text() {
 }
 
 /**
+ * Backward compatible default design text helper.
+ *
+ * @since 3.1.9
+ * @return array
+ */
+function wps_ubo_lite_default_design_text() {
+	return wps_ubo_lite_offer_default_text();
+}
+
+/**
  * Bump Offer Html.
  *
  * @param   string $bump        Consists all data about order bump.
@@ -836,15 +859,21 @@ function wps_ubo_lite_bump_offer_html( $bump, $encountered_order_bump_id = '', $
 	/**
 	 * Text fields.
 	 */
-	$title = ! empty( $bump['design_text']['wps_upsell_offer_title'] ) ? $bump['design_text']['wps_upsell_offer_title'] : '';
+	$design_text = array();
+	if ( ! empty( $bump['design_text'] ) && is_array( $bump['design_text'] ) ) {
+		$design_text = $bump['design_text'];
+	}
+	$design_text = wp_parse_args( $design_text, wps_ubo_lite_default_design_text() );
 
-	$description = $bump['design_text']['wps_upsell_bump_offer_description'];
+	$title = ! empty( $design_text['wps_upsell_offer_title'] ) ? $design_text['wps_upsell_offer_title'] : '';
 
-	$product_description_text = $bump['design_text']['wps_bump_offer_decsription_text'];
+	$description = ! empty( $design_text['wps_upsell_bump_offer_description'] ) ? $design_text['wps_upsell_bump_offer_description'] : '';
 
-	$discount_title_fixed = ! empty( $bump['design_text']['wps_ubo_discount_title_for_fixed'] ) ? $bump['design_text']['wps_ubo_discount_title_for_fixed'] : '';
+	$product_description_text = ! empty( $design_text['wps_bump_offer_decsription_text'] ) ? $design_text['wps_bump_offer_decsription_text'] : '';
 
-	$discount_title_percent = ! empty( $bump['design_text']['wps_ubo_discount_title_for_percent'] ) ? $bump['design_text']['wps_ubo_discount_title_for_percent'] : '';
+	$discount_title_fixed = ! empty( $design_text['wps_ubo_discount_title_for_fixed'] ) ? $design_text['wps_ubo_discount_title_for_fixed'] : '';
+
+	$discount_title_percent = ! empty( $design_text['wps_ubo_discount_title_for_percent'] ) ? $design_text['wps_ubo_discount_title_for_percent'] : '';
 
 	if ( ! empty( $bump['bump_price_html'] ) ) {
 
@@ -966,7 +995,7 @@ function wps_ubo_lite_bump_offer_html( $bump, $encountered_order_bump_id = '', $
 			border: none;
 		}
 
-		<?php echo esc_html( $order_bump_div_id ); ?> .wps_upsell_offer_discount_section h3 .amount {
+		<?php echo esc_html( $order_bump_div_id ); ?>.wps_upsell_offer_discount_section h3 .amount {
 			font-size: inherit;
 			color: inherit;
 		}
@@ -1012,7 +1041,10 @@ function wps_ubo_lite_bump_offer_html( $bump, $encountered_order_bump_id = '', $
 		<?php echo esc_html( $order_bump_div_id ); ?> .wps_upsell_offer_product_section h4 {
 			margin: 0;
 			color: <?php echo esc_html( $product_section_text_color ); ?>;
-			font-size: <?php echo esc_html( $product_section_text_size += 10 ) . esc_html( 'px' ); ?>;
+			<?php
+				$product_section_heading_size = is_numeric( $product_section_text_size ) ? ( (int) $product_section_text_size + 10 ) : 10;
+			?>
+			font-size: <?php echo esc_html( $product_section_heading_size ) . esc_html( 'px' ); ?>;
 			font-weight: 300;
 		}
 
@@ -1211,7 +1243,8 @@ function wps_ubo_lite_bump_offer_html( $bump, $encountered_order_bump_id = '', $
 
 	// If still not found.
 	if ( empty( $image ) ) {
-		$image = wp_get_attachment_image_src( get_post_thumbnail_id( $bump['id'] ), 'single-post-thumbnail' )[0];
+		$image_src = wp_get_attachment_image_src( get_post_thumbnail_id( $bump['id'] ), 'single-post-thumbnail' );
+		$image = $image_src ? $image_src[0] : '';
 	}
 
 	if ( empty( $image ) ) {
@@ -1416,8 +1449,38 @@ function wps_ubo_lite_fetch_bump_offer_details( $encountered_bump_array_index, $
 
 	$encountered_bump_array = $wps_ubo_offer_array_collection[ $encountered_bump_array_index ];
 
+	$default_design_css = array(
+		'parent_border_type'              => 'dashed',
+		'parent_border_color'             => '#000000',
+		'top_vertical_spacing'            => '10',
+		'bottom_vertical_spacing'         => '10',
+		'parent_background_color'         => '#ffffff',
+		'discount_section_background_color' => '#ffffff',
+		'discount_section_text_color'     => '#616060',
+		'discount_section_text_size'      => '35',
+		'product_section_text_color'      => '#0a0a0a',
+		'product_section_text_size'       => '14',
+		'product_section_img_width'       => '68',
+		'product_section_img_height'      => '80',
+		'product_section_price_text_size' => '13',
+		'product_section_price_text_color' => '#000000',
+		'primary_section_background_color' => '#73cc12',
+		'primary_section_text_color'      => '#ffffff',
+		'primary_section_arrow_color'     => '#FF0000',
+		'primary_section_text_size'       => '18',
+		'secondary_section_background_color' => '#ffdd2f',
+		'secondary_section_text_color'    => '#292626',
+		'secondary_section_text_size'     => '20',
+	);
+
+	$encountered_design_css  = isset( $encountered_bump_array['design_css'] ) && is_array( $encountered_bump_array['design_css'] ) ? $encountered_bump_array['design_css'] : array();
+	$encountered_design_text = isset( $encountered_bump_array['design_text'] ) && is_array( $encountered_bump_array['design_text'] ) ? $encountered_bump_array['design_text'] : array();
+
+	$encountered_bump_array['design_css']  = wp_parse_args( $encountered_design_css, $default_design_css );
+	$encountered_bump_array['design_text'] = wp_parse_args( $encountered_design_text, wps_ubo_lite_default_design_text() );
+
 	$wps_bump_upsell_selected_template = ! empty( $encountered_bump_array['wps_bump_upsell_selected_template'] ) ? sanitize_text_field( $encountered_bump_array['wps_bump_upsell_selected_template'] ) : '';
-	$bump['template_check_select'] = $encountered_bump_array['wps_bump_upsell_selected_template'];
+	$bump['template_check_select'] = $wps_bump_upsell_selected_template;
 
 	// Countdown Timer.
 	$counter_timer = ! empty( $encountered_bump_array['wps_ubo_offer_timer'] ) ? $encountered_bump_array['wps_ubo_offer_timer'] : '';
@@ -1432,7 +1495,8 @@ function wps_ubo_lite_fetch_bump_offer_details( $encountered_bump_array_index, $
 
 	$offer_id = ! empty( $encountered_bump_array['wps_upsell_bump_products_in_offer'] ) ? sanitize_text_field( $encountered_bump_array['wps_upsell_bump_products_in_offer'] ) : '';
 
-	$discount_price = ! empty( $encountered_bump_array['wps_upsell_bump_offer_discount_price'] ) ? sanitize_text_field( $encountered_bump_array['wps_upsell_bump_offer_discount_price'] ) : '';
+	$price_type     = ! empty( $encountered_bump_array['wps_upsell_offer_price_type'] ) ? $encountered_bump_array['wps_upsell_offer_price_type'] : 'no_disc';
+	$discount_price = isset( $encountered_bump_array['wps_upsell_bump_offer_discount_price'] ) ? sanitize_text_field( $encountered_bump_array['wps_upsell_bump_offer_discount_price'] ) : '';
 
 	$_product = wc_get_product( $offer_id );
 
@@ -1442,8 +1506,8 @@ function wps_ubo_lite_fetch_bump_offer_details( $encountered_bump_array_index, $
 	}
 
 	$price              = $_product->get_price();
-	$price_type         = $encountered_bump_array['wps_upsell_offer_price_type'];
-	$price_discount     = $encountered_bump_array['wps_upsell_bump_offer_discount_price'];
+	$price_type         = ! empty( $price_type ) ? $price_type : 'no_disc';
+	$price_discount     = $discount_price;
 	$meta_forms_allowed = ! empty( $encountered_bump_array['wps_ubo_offer_meta_forms'] ) ? $encountered_bump_array['wps_ubo_offer_meta_forms'] : 'no';
 	$meta_form_fields   = ! empty( $encountered_bump_array['meta_form_fields'] ) ? $encountered_bump_array['meta_form_fields'] : array();
 
@@ -1620,8 +1684,58 @@ function wps_ubo_lite_retrieve_bump_location_details( $key = '_after_payment_gat
 				'hook'     => 'woocommerce_review_order_before_submit',
 				'priority' => 21,
 				'name'     => 'Before Place order button',
-			);
+	);
+}
+
+if ( ! function_exists( 'wps_ubo_render_admin_pagination' ) ) {
+	/**
+	 * Render a simple, styled pagination control for admin listings.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param int    $current_page Current page number.
+	 * @param int    $total_pages  Total number of pages.
+	 * @param string $base_url     Base URL to append page param to.
+	 * @param string $page_param   Query string key for the page (default: paged).
+	 */
+	function wps_ubo_render_admin_pagination( $current_page, $total_pages, $base_url, $page_param = 'paged' ) {
+		$current_page = max( 1, (int) $current_page );
+		$total_pages  = max( 1, (int) $total_pages );
+		$page_param   = sanitize_key( $page_param );
+
+		if ( $total_pages <= 1 ) {
+			return;
 		}
+
+		$prev_url = $current_page > 1 ? add_query_arg( $page_param, $current_page - 1, $base_url ) : '';
+		$next_url = $current_page < $total_pages ? add_query_arg( $page_param, $current_page + 1, $base_url ) : '';
+		?>
+		<div class="wps_ubo_pagination">
+			<div class="wps_ubo_page_info">
+				<?php
+				printf(
+					/* translators: 1: current page, 2: total pages */
+					esc_html__( 'Page %1$d of %2$d', 'upsell-order-bump-offer-for-woocommerce' ),
+					(int) $current_page,
+					(int) $total_pages
+				);
+				?>
+			</div>
+			<div class="wps_ubo_page_links">
+				<?php if ( ! empty( $prev_url ) ) : ?>
+					<a class="button" href="<?php echo esc_url( $prev_url ); ?>">&laquo; <?php esc_html_e( 'Previous', 'upsell-order-bump-offer-for-woocommerce' ); ?></a>
+				<?php endif; ?>
+
+				<span class="wps_ubo_page_number"><?php echo esc_html( $current_page ); ?></span>
+
+				<?php if ( ! empty( $next_url ) ) : ?>
+					<a class="button" href="<?php echo esc_url( $next_url ); ?>"><?php esc_html_e( 'Next', 'upsell-order-bump-offer-for-woocommerce' ); ?> &raquo;</a>
+				<?php endif; ?>
+			</div>
+		</div>
+		<?php
+	}
+}
 	} else {   // Code For Comapatibility With CheckoutWC plugin.
 		$location_details = array(
 			'_before_order_summary'      => array(
@@ -2488,8 +2602,8 @@ function wps_ubo_lite_custom_price_html( $product_id = '', $bump_discount = '', 
 
 	// If only bump offer price is needed.
 	if ( 'price' === $get ) {
-
-		return $bump_price;
+		$bump_price         = apply_filters( 'wps_ubo_convert_base_price_diffrent_currency', $bump_price );
+		return $bump_price; // need to get which prce is get the divided by exchnage rate.
 	}
 
 	/**
@@ -2709,6 +2823,11 @@ function wps_ubo_session_destroy() {
  */
 function wps_ubo_go_pro( $location = 'pro' ) {
 
+	// Do not render upsell popup if Pro is active.
+	if ( wps_ubo_lite_if_pro_exists() ) {
+		return;
+	}
+
 	if ( 'pro' === $location ) {
 
 		$message = esc_html__( 'Want some more super cool features? Unlock your power to explore more.', 'upsell-order-bump-offer-for-woocommerce' );
@@ -2834,26 +2953,33 @@ function wps_ubo_lite_get_title( $product_id = '' ) {
  */
 function wps_ubo_lite_get_bump_title( $bump_id = '' ) {
 
-	if ( ! empty( $bump_id ) ) {
+	$result = esc_html__( 'Bump not found', 'upsell-order-bump-offer-for-woocommerce' );
 
-		$wps_upsell_bumps_list = get_option( 'wps_ubo_bump_list' );
-		;
-
-		if ( ! empty( $wps_upsell_bumps_list ) ) {
-
-			if ( 'yes' != $wps_upsell_bumps_list[ $bump_id ]['wps_upsell_bump_status'] ) {
-
-				$result = esc_html__( 'Bump Unavailable / Bump Not Live', 'upsell-order-bump-offer-for-woocommerce' );
-			} else {
-				$result = $wps_upsell_bumps_list[ $bump_id ]['wps_upsell_bump_name'];
-			}
-		}
-
+	if ( empty( $bump_id ) ) {
 		return $result;
-	} else {
-
-		$result = esc_html__( 'Bump not found', 'upsell-order-bump-offer-for-woocommerce' );
 	}
+
+	$wps_upsell_bumps_list = get_option( 'wps_ubo_bump_list' );
+
+	if ( empty( $wps_upsell_bumps_list ) || ! is_array( $wps_upsell_bumps_list ) ) {
+		return $result;
+	}
+
+	if ( ! isset( $wps_upsell_bumps_list[ $bump_id ] ) || ! is_array( $wps_upsell_bumps_list[ $bump_id ] ) ) {
+		return $result;
+	}
+
+	$bump_data = $wps_upsell_bumps_list[ $bump_id ];
+
+	if ( isset( $bump_data['wps_upsell_bump_status'] ) && 'yes' !== $bump_data['wps_upsell_bump_status'] ) {
+		return esc_html__( 'Bump Unavailable / Bump Not Live', 'upsell-order-bump-offer-for-woocommerce' );
+	}
+
+	if ( isset( $bump_data['wps_upsell_bump_name'] ) && ! empty( $bump_data['wps_upsell_bump_name'] ) ) {
+		$result = $bump_data['wps_upsell_bump_name'];
+	}
+
+	return $result;
 }
 
 /**
@@ -2921,7 +3047,11 @@ function wps_ubo_lite_getcat_title( $cat_id = '' ) {
  * @param   int    $encountered_order_bump_id                  Single order bump id.
  * @since   1.4.0
  */
-function wps_ubo_analyse_and_display_order_bump( $key, $encountered_respective_target_key, int $encountered_order_bump_id = null ) {
+function wps_ubo_analyse_and_display_order_bump(
+	$key,
+	$encountered_respective_target_key,
+	?int $encountered_order_bump_id = null
+) {
 
 	if ( empty( $encountered_order_bump_id ) ) {
 
@@ -3015,7 +3145,11 @@ function wps_ubo_analyse_and_display_order_bump( $key, $encountered_respective_t
  * @param   int   $encountered_order_bump_id          Single order bump id.
  * @since   1.4.0
  */
-function wps_ubo_order_bump_session_validations( $wps_ubo_offer_array_collection, $wps_ubo_global_options, int $encountered_order_bump_id = null ) {
+function wps_ubo_order_bump_session_validations(
+	$wps_ubo_offer_array_collection,
+	$wps_ubo_global_options,
+	?int $encountered_order_bump_id = null
+) {
 
 	if ( empty( $encountered_order_bump_id ) || empty( $wps_ubo_offer_array_collection[ $encountered_order_bump_id ] ) ) {
 
@@ -5374,7 +5508,7 @@ function wps_ubo_lite_bump_offer_html_10( $bump, $encountered_order_bump_id = ''
 			clear: both;
 		}
 
-		<?php echo esc_html( $order_bump_div_id ); ?>.wps-ob-st {
+		<?php echo esc_html( $order_bump_div_id ); ?> .wps-ob-st {
 			border: <?php echo esc_html( $parent_border_type . ' ' . $parent_border_color . ' ' . $parent_border_width ); ?>;
 			margin: 0 auto;
 			<?php
@@ -6239,7 +6373,9 @@ function wps_ubo_lite_bump_offer_html_11( $bump, $encountered_order_bump_id = ''
 
 	$bumphtml .= $wps_ubo_red_arrow_html;
 
-	$bumphtml .= '<label class="wps_upsell_bump_checkbox_container"><input type="checkbox"' . $check . ' class="add_offer_in_cart" id="wps_checkbox_offer' . esc_html( $order_bump_key ) . '">
+	$check_attr = ! empty( $check ) ? ' ' . $check : '';
+
+	$bumphtml .= '<label class="wps_upsell_bump_checkbox_container"><input type="checkbox"' . $check_attr . ' class="add_offer_in_cart" id="wps_checkbox_offer' . esc_html( $order_bump_key ) . '">
 			<span class="checkmark"></span></label>
             <span class = "wps_accetp_offer_title">' . $title . '</span></div>
         </div>
@@ -6946,7 +7082,7 @@ if ( ! function_exists( 'wps_upselllite_allowed_html_funnel_builder' ) ) {
 	 * @return array
 	 */
 	function wps_upselllite_allowed_html_funnel_builder() {
-		// Return the complete html elements defined by us.
+		 // Return the complete html elements defined by us.
 		$allowed_html = array(
 			'input'   => array(
 				'class'       => array(
@@ -7528,7 +7664,7 @@ if ( ! function_exists( 'wps_upsell_lite_get_pid_from_url_params_funnel_builder'
 	 * @return array
 	 */
 	function wps_upsell_lite_get_pid_from_url_params_funnel_builder() {
-		$params['status']  = 'false';
+		 $params['status']  = 'false';
 		$secure_nonce      = wp_create_nonce( 'wps-upsell-auth-nonce' );
 		$id_nonce_verified = wp_verify_nonce( $secure_nonce, 'wps-upsell-auth-nonce' );
 
@@ -7822,11 +7958,12 @@ function wps_render_campaign_label_select( $args ) {
 	);
 	$args = wp_parse_args( $args, $defaults );
 
-	if ( empty( $args['id'] ) || empty( $args['name'] ) || empty( $args['options'] ) ) {
+	// ❗ DO NOT return when options are empty.
+	if ( empty( $args['id'] ) || empty( $args['name'] ) ) {
 		return;
 	}
 
-	// Print minimal CSS + JS once per page load.
+	// Print CSS + JS once.
 	if ( ! $assets_printed ) {
 		$assets_printed = true;
 		?>
@@ -7834,9 +7971,8 @@ function wps_render_campaign_label_select( $args ) {
 			.wps-select {
 				position: relative;
 				width: 320px;
-				font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+				font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
 			}
-			.wps-select.wps-has-width { width: auto; }
 			.wps-selected {
 				background: #fff;
 				border: 1px solid #dcdcdc;
@@ -7847,29 +7983,69 @@ function wps_render_campaign_label_select( $args ) {
 				justify-content: space-between;
 				align-items: center;
 			}
-			.wps-selected-left { display: flex; align-items: center; gap: 10px; }
+			.wps-selected-left {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
 			.wps-selected-color {
-				width: 18px; height: 18px; border-radius: 50%;
-				border: 1px solid #cfcfcf; background: transparent;
+				width: 18px;
+				height: 18px;
+				border-radius: 50%;
+				border: 1px solid #cfcfcf;
 			}
-			.wps-selected-label { color: #32373c; }
-			.wps-arrow { width: 20px; height: 20px; transition: transform .2s ease; opacity: .7; }
-			.wps-arrow.wps-rot { transform: rotate(180deg); }
+			.wps-selected-label {
+				color: #32373c;
+			}
+			.wps-arrow {
+				width: 18px;
+				height: 18px;
+				opacity: .6;
+				transition: transform .2s ease;
+			}
+			.wps-arrow.wps-rot {
+				transform: rotate(180deg);
+			}
 			.wps-options {
-				position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: #fff;
-				border: 1px solid #e2e2e2; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.08);
-				max-height: 260px; overflow-y: auto; z-index: 9999; display: none;
+				position: absolute;
+				top: calc(100% + 6px);
+				left: 0;
+				right: 0;
+				background: #fff;
+				border: 1px solid #e2e2e2;
+				border-radius: 8px;
+				box-shadow: 0 8px 24px rgba(0,0,0,.08);
+				max-height: 240px;
+				overflow-y: auto;
+				z-index: 9999;
+				display: none;
 			}
-			.wps-option { display: flex; align-items: center; gap: 10px; padding: 10px 12px; cursor: pointer; }
-			.wps-option:hover { background: #f6f6f6; }
-			.wps-option-color { width: 18px; height: 18px; border-radius: 50%; border: 1px solid #cfcfcf; }
-			.wps-hide { display: none !important; }
+			.wps-option {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 10px 12px;
+				cursor: pointer;
+			}
+			.wps-option:hover {
+				background: #f6f6f6;
+			}
+			.wps-option-color {
+				width: 18px;
+				height: 18px;
+				border-radius: 50%;
+				border: 1px solid #cfcfcf;
+			}
+			.wps-option-disabled {
+				color: #999;
+				cursor: not-allowed;
+				padding: 10px 12px;
+			}
 		</style>
-		<script>
-			(function() {
-				function init(container) {
-					if (!container) return;
 
+		<script>
+			(function () {
+				function init(container) {
 					const selected  = container.querySelector('.wps-selected');
 					const labelSpan = container.querySelector('.wps-selected-label');
 					const colorDot  = container.querySelector('.wps-selected-color');
@@ -7878,119 +8054,122 @@ function wps_render_campaign_label_select( $args ) {
 					const arrow     = container.querySelector('.wps-arrow');
 
 					function setSelected(label, hex) {
-						labelSpan.textContent = label || container.dataset.placeholder || 'Select a campaign label';
+						labelSpan.textContent = label || container.dataset.placeholder;
 						colorDot.style.backgroundColor = hex || 'transparent';
-						// Store BOTH values together: "#hex/Label"
 						hidden.value = (hex ? hex : '') + (label ? '/' + label : '');
 					}
 
-					// Initialize from current hidden value or fallback to placeholder.
 					(function initValue() {
 						const current = hidden.value || '';
-						// Accept "#hex" OR "#hex/Label"
 						const parts = current.split('/');
 						const currentHex = parts[0] || '';
 						const currentLabel = parts[1] || '';
 
+						// Saved value.
 						if (currentHex) {
 							const match = container.querySelector('.wps-option[data-color="' + currentHex + '"]');
 							if (match) {
-								// Prefer stored label; else fallback to option's label
-								const label = currentLabel || match.dataset.label || '';
-								setSelected(label, currentHex);
+								setSelected(currentLabel || match.dataset.label, currentHex);
 								return;
 							}
+						}
+						const first = container.querySelector('.wps-option[data-color]');
+						if (first) {
+							setSelected(first.dataset.label, first.dataset.color);
+							return;
 						}
 						setSelected('', '');
 					})();
 
 					function closeAll() {
 						optionsEl.style.display = 'none';
-						arrow && arrow.classList.remove('wps-rot');
+						arrow.classList.remove('wps-rot');
 					}
 
-					function toggle() {
-						const isOpen = optionsEl.style.display === 'block';
-						if (isOpen) {
-							closeAll();
-						} else {
-							optionsEl.style.display = 'block';
-							arrow && arrow.classList.add('wps-rot');
+					selected.addEventListener('click', function () {
+						if (!optionsEl.querySelector('.wps-option[data-color]')) {
+							return;
 						}
-					}
+						const open = optionsEl.style.display === 'block';
+						optionsEl.style.display = open ? 'none' : 'block';
+						arrow.classList.toggle('wps-rot', !open);
+					});
 
-					selected.addEventListener('click', toggle);
-
-					container.addEventListener('click', function(e) {
-						const opt = e.target.closest('.wps-option');
-						if (!opt || !container.contains(opt)) return;
+					container.addEventListener('click', function (e) {
+						const opt = e.target.closest('.wps-option[data-color]');
+						if (!opt) return;
 						setSelected(opt.dataset.label, opt.dataset.color);
 						closeAll();
 					});
 
-					document.addEventListener('click', function(e) {
+					document.addEventListener('click', function (e) {
 						if (!container.contains(e.target)) closeAll();
 					});
 				}
 
-				document.addEventListener('DOMContentLoaded', function() {
-					document.querySelectorAll('[data-wps-campaign-select]').forEach(function(el) {
-						init(el);
-					});
+				document.addEventListener('DOMContentLoaded', function () {
+					document.querySelectorAll('[data-wps-campaign-select]').forEach(init);
 				});
 			})();
 		</script>
 		<?php
 	}
 
-	// Build options markup from PHP array.
-	$options_markup = '';
-	foreach ( $args['options'] as $opt ) {
-		$label = isset( $opt['name'] ) ? $opt['name'] : '';
-		$color = isset( $opt['color'] ) ? $opt['color'] : '';
-		if ( '' === $label || '' === $color ) {
+		$options_markup = '';
+		$options_markup .= '
+			<div class="wps-option wps-option-none" data-label="" data-color="">
+				<div class="wps-option-color" style="background:transparent;"></div>
+				<span>No label</span>
+			</div>
+		';
+
+		foreach ( (array) $args['options'] as $opt ) {
+
+		if ( empty( $opt['name'] ) || empty( $opt['color'] ) ) {
 			continue;
 		}
-
 		$options_markup .= sprintf(
 			'<div class="wps-option" data-label="%1$s" data-color="%2$s">
-				<div class="wps-option-color" style="background:%2$s;"></div>
+				<div class="wps-option-color" style="background:%2$s"></div>
 				<span>%1$s</span>
 			</div>',
-			esc_html( $label ),
-			esc_attr( $color )
+			esc_html( $opt['name'] ),
+			esc_attr( $opt['color'] )
 		);
 	}
 
-	// Output control.
+	if ( empty( $options_markup ) ) {
+		$options_markup = '<div class="wps-option-disabled">No campaign labels found</div>';
+		$args['placeholder'] = 'No campaign labels available';
+	}
 	?>
+
 	<div
 		id="<?php echo esc_attr( $args['id'] ); ?>"
-		class="wps-select <?php echo $args['width'] ? 'wps-has-width' : ''; ?>"
+		class="wps-select"
 		data-wps-campaign-select
 		data-placeholder="<?php echo esc_attr( $args['placeholder'] ); ?>"
-		style="<?php echo $args['width'] ? 'width:' . esc_attr( $args['width'] ) . ';' : ''; ?>">
+		style="width:<?php echo esc_attr( $args['width'] ); ?>">
+
 		<div class="wps-selected">
 			<div class="wps-selected-left">
 				<div class="wps-selected-color"></div>
 				<span class="wps-selected-label"><?php echo esc_html( $args['placeholder'] ); ?></span>
 			</div>
-			<svg class="wps-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" focusable="false">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+			<svg class="wps-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+				<path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
 			</svg>
 		</div>
 
 		<div class="wps-options">
-			<?php
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo wp_kses_post( $options_markup );
-			?>
+			<?php echo wp_kses_post( $options_markup ); ?>
 		</div>
 
 		<input type="hidden" name="<?php echo esc_attr( $args['name'] ); ?>" value="<?php echo esc_attr( $args['value'] ); ?>">
 	</div>
 	<?php
 }
+
 
 /**
  * (Optional) Helper to render as a WooCommerce settings row.
@@ -8017,4 +8196,883 @@ function wps_render_wc_settings_row_campaign_select( $title, $desc, $select_args
 	<?php
 }
 
+/**
+ * Wc_render_discount_conditions_popup.
+ *
+ * @param string $wps_funnel_type funnel type.
+ * @param string $bump_id  bump/funnel id.
+ * @param array  $args argument.
+ * @return void
+ */
+function wc_render_discount_conditions_popup( $wps_funnel_type = '', $bump_id = '', $args = array() ) {
+	$defaults = array(
+		'modal_id'   => 'wc-discount-popup',
+		'button_id'  => 'show-discount-conditions',
+		'callback'   => null,
+		'rules'      => get_option( 'wc_dynamic_discount_rules', array() ),
+		'discount_amount' => get_option( 'wc_dynamic_discount_amount', 0 ),
+	);
+	$args = wp_parse_args( $args, $defaults );
 
+	// Get rules for this funnel type and bump ID.
+	$rules = array();
+	if ( ! empty( $wps_funnel_type ) && ! empty( $bump_id ) && isset( $args['rules'][ $wps_funnel_type ][ $bump_id ] ) ) {
+		$rules = $args['rules'][ $wps_funnel_type ][ $bump_id ];
+	}
+
+	$coupons = get_posts(
+		array(
+			'post_type' => 'shop_coupon',
+			'posts_per_page' => -1,
+		)
+	);
+	// ========== NEW: Get list of countries for dropdown. ==========
+	$countries_obj = new WC_Countries();
+	$countries = $countries_obj->get_countries();
+	// =============================================================
+	?>
+
+	<!-- Modal. -->
+	<div id="<?php echo esc_attr( $args['modal_id'] ); ?>" class="wc-discount-modal">
+		<div class="wc-discount-modal-content">
+			<div class="wc-discount-modal-header">
+				<h2><?php esc_html_e( 'Visibility Conditions', 'upsell-order-bump-offer-for-woocommerce' ); ?></h2>
+				<button type="button" class="wc-discount-close">&times;</button>
+			</div>
+
+			<form method="post" class="wc-discount-form" id="wc-discount-condition-form">
+				<?php wp_nonce_field( 'wc_save_dynamic_rules', 'wc_dynamic_rules_nonce' ); ?>
+
+				<div class="wc-discount-rules-table-wrap">
+					<table class="wc-discount-rules-table" id="dynamic-rules-table">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Condition Field', 'upsell-order-bump-offer-for-woocommerce' ); ?></th>
+								<th><?php esc_html_e( 'Operator', 'upsell-order-bump-offer-for-woocommerce' ); ?></th>
+								<th><?php esc_html_e( 'Value', 'upsell-order-bump-offer-for-woocommerce' ); ?></th>
+								<th><?php esc_html_e( 'Action', 'upsell-order-bump-offer-for-woocommerce' ); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php if ( ! empty( $rules ) ) : ?>
+								<?php
+								foreach ( $rules as $index => $rule ) :
+									$field    = esc_attr( $rule['field'] );
+									$operator = esc_attr( $rule['operator'] );
+									$value    = is_array( $rule['value'] ) ? $rule['value'] : array( $rule['value'] );
+									?>
+									<tr>
+										<td>
+											<select class="rule-field" name="rules[<?php echo esc_attr( $index ); ?>][field]">
+												<option value="cart_total" <?php selected( $field, 'cart_total' ); ?>><?php esc_html_e( 'Cart Total', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+												<option value="subtotal" <?php selected( $field, 'subtotal' ); ?>><?php esc_html_e( 'Subtotal', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+												<option value="coupon_applied" <?php selected( $field, 'coupon_applied' ); ?>><?php esc_html_e( 'Coupon Applied', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+												<option value="user_status" <?php selected( $field, 'user_status' ); ?>><?php esc_html_e( 'User Login Status', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+												<option value="user_registered" <?php selected( $field, 'user_registered' ); ?>><?php esc_html_e( 'Specific Registered User', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+											<!-- ========== NEW: Device Type Option. ========== -->
+<option value="device_type" <?php selected( $field, 'device_type' ); ?>><?php esc_html_e( 'Device Type', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+<!-- ========== NEW: Country/Region Option. ========== -->
+<option value="country" <?php selected( $field, 'country' ); ?>><?php esc_html_e( 'Country / Region', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+<!-- ============================================== -->
+											</select>
+										</td>
+										<td>
+											<select class="rule-operator" name="rules[<?php echo esc_attr( $index ); ?>][operator]">
+												<option value="greater_than" <?php selected( $operator, 'greater_than' ); ?>><?php esc_html_e( 'Greater Than', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+												<option value="less_than" <?php selected( $operator, 'less_than' ); ?>><?php esc_html_e( 'Less Than', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+												<option value="is" <?php selected( $operator, 'is' ); ?>><?php esc_html_e( 'Is', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+												<option value="is_not" <?php selected( $operator, 'is_not' ); ?>><?php esc_html_e( 'Is Not', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+											</select>
+										</td>
+										<td class="value-cell">
+
+											<?php
+											// Define allowed HTML tags and attributes for select and input elements.
+											$allowed_html = array(
+												'select' => array(
+													'class' => array(),
+													'name' => array(),
+													'multiple' => array(),
+												),
+												'option' => array(
+													'value' => array(),
+													'selected' => array(),
+												),
+												'input' => array(
+													'type' => array(),
+													'name' => array(),
+													'value' => array(),
+													'class' => array(),
+												),
+											);
+
+											// Use wp_kses to sanitize the output.
+											// MODIFIED: Pass countries to render function.
+											echo wp_kses( wc_render_value_input( $field, $index, $value, $coupons, $countries ), $allowed_html );
+											// =================================================================
+											?>
+										</td>
+										<td><button type="button" class="button remove-row"><?php esc_html_e( 'Remove', 'upsell-order-bump-offer-for-woocommerce' ); ?></button></td>
+									</tr>
+								<?php endforeach; ?>
+							<?php else : ?>
+								<tr>
+									<td>
+										<select class="rule-field" name="rules[0][field]">
+											<option value="cart_total"><?php esc_html_e( 'Cart Total', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+											<option value="subtotal"><?php esc_html_e( 'Subtotal', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+											<option value="coupon_applied"><?php esc_html_e( 'Coupon Applied', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+											<option value="user_status"><?php esc_html_e( 'User Login Status', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+											<option value="user_registered"><?php esc_html_e( 'Specific Registered User', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+											<!-- ========== NEW: Device Type Option ========== -->
+<option value="device_type"><?php esc_html_e( 'Device Type', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+<!-- ========== NEW: Country/Region Option ========== -->
+<option value="country"><?php esc_html_e( 'Country / Region', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+<!-- ============================================== -->
+										</select>
+									</td>
+									<td>
+										<select class="rule-operator" name="rules[0][operator]">
+											<option value="greater_than"><?php esc_html_e( 'Greater Than', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+											<option value="less_than"><?php esc_html_e( 'Less Than', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+											<option value="is"><?php esc_html_e( 'Is', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+											<option value="is_not"><?php esc_html_e( 'Is Not', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+										</select>
+									</td>
+									<td class="value-cell"><input type="number" name="rules[0][value][]" value="" /></td>
+									<td><button type="button" class="button remove-row"><?php esc_html_e( 'Remove', 'upsell-order-bump-offer-for-woocommerce' ); ?></button></td>
+								</tr>
+							<?php endif; ?>
+						</tbody>
+					</table>
+				</div>
+
+				<p class="wc-discount-add-btn"><button type="button" id="add-rule" class="button button-primary">+ Add Condition</button></p>
+			</form>
+
+			<div class="wc-discount-modal-footer">
+				<button type="button" class="button btn-secondary wc-discount-cancel"><?php esc_html_e( 'Cancel', 'upsell-order-bump-offer-for-woocommerce' ); ?></button>
+				<button type="button" class="button btn-primary wc-discount-save"><?php esc_html_e( 'Save Conditions', 'upsell-order-bump-offer-for-woocommerce' ); ?></button>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		jQuery(document).ready(function($) {
+
+			const modal_id = '<?php echo esc_js( $args['modal_id'] ); ?>';
+			const $modal = $('#' + modal_id);
+			const $form = $modal.find('#wc-discount-condition-form');
+
+			function init_select2() {
+				$modal.find('.select2-field').select2({
+					width: '100%',
+					placeholder: 'Select value(s)',
+					allowClear: true,
+					dropdownParent: $modal
+				});
+			}
+
+			// Initialize.
+			init_select2();
+			let row_index = $modal.find('#dynamic-rules-table tbody tr').length;
+			let rules_saved = false;
+
+			// Count rules that have field, operator, and at least one value.
+			function get_valid_rule_count() {
+				const $rows = $modal.find('#dynamic-rules-table tbody tr');
+				if (!$rows.length) {
+					return 0;
+				}
+
+				let valid_count = 0;
+
+				$rows.each(function() {
+					const field_val = $(this).find('.rule-field').val();
+					const operator_val = $(this).find('.rule-operator').val();
+					let has_value = false;
+
+					$(this).find('.value-cell').find('input, select').each(function() {
+						const current_val = $(this).val();
+
+						if (Array.isArray(current_val)) {
+							if (current_val.filter(Boolean).length > 0) {
+								has_value = true;
+							}
+						} else if (current_val !== null && $.trim(current_val) !== '') {
+							has_value = true;
+						}
+					});
+
+					if (field_val && operator_val && has_value) {
+						valid_count++;
+					}
+				});
+
+				return valid_count;
+			}
+
+			// Open/Close Modal.
+			$('.wc-discount-close, .wc-discount-cancel').on('click', function() {
+				$('.wc-discount-modal').removeClass('ubo_show');
+				$('.wc-discount-modal').removeClass('show');
+			});
+
+			$(window).on('click', function(event) {
+				if (event.target === $modal[0]) {
+					$('.wc-discount-modal').removeClass('ubo_show');
+					$('.wc-discount-modal').removeClass('show');
+				}
+			});
+
+			// Add new condition.
+			$modal.find('#add-rule').on('click', function() {
+				const new_row = `
+					<tr>
+						<td>
+							<select class="rule-field" name="rules[${row_index}][field]">
+								<option value="cart_total"><?php esc_html_e( 'Cart Total', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+								<option value="subtotal"><?php esc_html_e( 'Subtotal', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+								<option value="coupon_applied"><?php esc_html_e( 'Coupon Applied', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+								<option value="user_status"><?php esc_html_e( 'User Login Status', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+								<option value="user_registered"><?php esc_html_e( 'Specific Registered User', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+								<option value="device_type"><?php esc_html_e( 'Device Type', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+								<option value="country"><?php esc_html_e( 'Country / Region', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+							</select>
+						</td>
+
+						<td>
+							<select class="rule-operator" name="rules[${row_index}][operator]">
+								<option value="greater_than"><?php esc_html_e( 'Greater Than', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+								<option value="less_than"><?php esc_html_e( 'Less Than', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+								<option value="is"><?php esc_html_e( 'Is', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+								<option value="is_not"><?php esc_html_e( 'Is Not', 'upsell-order-bump-offer-for-woocommerce' ); ?></option>
+							</select>
+						</td>
+
+						<td class="value-cell">
+							<input type="number" class="wps_number_validation" name="rules[${row_index}][value][]" value="" />
+						</td>
+
+						<td>
+							<button type="button" class="button remove-row">
+								<?php esc_html_e( 'Remove', 'upsell-order-bump-offer-for-woocommerce' ); ?>
+							</button>
+						</td>
+					</tr>`;
+					$modal.find('#dynamic-rules-table tbody').append(new_row);
+
+				// Get the newly added row and render the correct value input.
+				const $new_row = $modal.find('#dynamic-rules-table tbody tr').last();
+				const field = $new_row.find('.rule-field').val();
+				const $td = $new_row.find('.value-cell');
+
+				$.ajax({
+					url: ajaxurl,
+					method: 'POST',
+					data: {
+						action: 'wc_get_dynamic_value_field',
+						field,
+						row_idx: row_index,
+						wc_dynamic_rules_nonce: '<?php echo esc_attr( wp_create_nonce( 'wc_save_dynamic_rules' ) ); ?>'
+					},
+					success: function(html) {
+						$td.html(html);
+						init_select2();
+						filter_operators($new_row);
+					}
+				});
+
+				row_index++;
+				rules_saved = false;
+			});
+
+			// Remove condition.
+			$modal.on('click', '.remove-row', function() {
+				$(this).closest('tr').remove();
+				rules_saved = false;
+			});
+
+			// Filter operators.
+// ========== MODIFIED: Updated to include new field types ==========
+function filter_operators($row) {
+	const field = $row.find('.rule-field').val();
+	const $operator = $row.find('.rule-operator');
+	$operator.find('option').show();
+
+	// Hide greater_than/less_than for non-numeric fields
+	if (['coupon_applied', 'user_status', 'user_registered', 'device_type', 'country'].includes(field)) {
+		$operator.find('option[value="greater_than"], option[value="less_than"]').hide();
+		if (['greater_than', 'less_than'].includes($operator.val())) {
+			$operator.val('is');
+		}
+	}
+}
+// ================================================================
+
+			$modal.on('change', '.rule-field', function() {
+				const $row = $(this).closest('tr');
+				const $td = $row.find('.value-cell');
+				const field = $(this).val();
+				const row_idx = $(this).attr('name').match(/\d+/)[0];
+				filter_operators($row);
+				rules_saved = false;
+
+				$.ajax({
+					url: ajaxurl,
+					method: 'POST',
+					data: {
+						action: 'wc_get_dynamic_value_field',
+						field,
+						row_idx,
+						wc_dynamic_rules_nonce: '<?php echo esc_attr( wp_create_nonce( 'wc_save_dynamic_rules' ) ); ?>'
+					},
+					success: function(html) {
+						$td.html(html);
+						init_select2();
+					}
+				});
+			});
+
+			$modal.find('#dynamic-rules-table tbody tr').each(function() {
+				filter_operators($(this));
+			});
+
+			// Mark unsaved when value changes.
+			$modal.on('change input', '.rule-operator, .value-cell input, .value-cell select', function() {
+				rules_saved = false;
+			});
+
+			// Save conditions.
+			$modal.find('.wc-discount-save').on('click', function() {
+				const valid_rules = get_valid_rule_count();
+				if (0 === valid_rules) {
+					alert('<?php echo esc_js( __( 'Please add at least one visibility condition with a value before saving.', 'upsell-order-bump-offer-for-woocommerce' ) ); ?>');
+					return;
+				}
+
+				const form_data = $form.serialize();
+
+				const bump_id_one = new URLSearchParams(window.location.search).get('bump_id');
+				const funnel_id_one = new URLSearchParams(window.location.search).get('funnel_id');
+				let bump_id = '';
+
+				if (bump_id_one) {
+					bump_id = bump_id_one;
+				} else if (funnel_id_one) {
+					bump_id = funnel_id_one;
+				}
+
+
+				const funnel_type = $('#wps_funnel_type').val();
+
+				if (!bump_id || !funnel_type) {
+					alert('Missing bump_id or funnel_type');
+					return;
+				}
+
+				$.ajax({
+					url: ajaxurl,
+					method: 'POST',
+					data: form_data + '&action=wc_save_dynamic_discount_rules&bump_id=' + encodeURIComponent(bump_id) + '&funnel_type=' + encodeURIComponent(funnel_type),
+
+					success: function(response) {
+						alert('Conditions saved successfully!');
+						rules_saved = true;
+						$('.wc-discount-modal').removeClass('ubo_show');
+						$('.wc-discount-modal').removeClass('show');
+						// Trigger custom event or callback
+						$(document).trigger('wc_discount_conditions_saved', response);
+					},
+					error: function() {
+						alert('Error saving conditions. Please try again.');
+					}
+				});
+			});
+
+			// Prevent saving the bump/funnel when conditional display is enabled without valid rules.
+			const $conditional_toggle = $('#wps_ubo_condition_show');
+			const $conditional_form = $conditional_toggle.length ? $conditional_toggle.closest('form') : null;
+
+			if ($conditional_form && $conditional_form.length) {
+				$conditional_form.on('submit', function(e) {
+					if ($conditional_toggle.is(':checked') && (0 === get_valid_rule_count() || !rules_saved)) {
+						e.preventDefault();
+						alert('<?php echo esc_js( __( 'Add at least one visibility condition or disable conditional display.', 'upsell-order-bump-offer-for-woocommerce' ) ); ?>');
+					}
+				});
+			}
+		});
+	</script>
+	<?php
+}
+
+// AJAX: Save conditions.
+add_action(
+	'wp_ajax_wc_save_dynamic_discount_rules',
+	function () {
+		$nonce = isset( $_POST['wc_dynamic_rules_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['wc_dynamic_rules_nonce'] ) ) : '';
+
+		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'wc_save_dynamic_rules' ) ) {
+			wp_send_json_error( array( 'message' => 'Nonce verification failed' ) );
+		}
+
+		// Get funnel type and bump ID first.
+		$funnel_type = isset( $_POST['funnel_type'] ) ? sanitize_text_field( wp_unslash( $_POST['funnel_type'] ) ) : '';
+		$bump_id = isset( $_POST['bump_id'] ) ? sanitize_text_field( wp_unslash( $_POST['bump_id'] ) ) : '';
+
+		// Validate that we have both funnel_type and bump_id.
+		if ( empty( $funnel_type ) || empty( $bump_id ) ) {
+			wp_send_json_error(
+				array(
+					'message' => 'Funnel type or bump ID is missing',
+					'funnel_type' => $funnel_type,
+					'bump_id' => $bump_id,
+				)
+			);
+		}
+
+		$rules = array();
+		$wps_rules_ubo = ! empty( $_POST['rules'] ) && is_array( $_POST['rules'] ) ? map_deep( wp_unslash( $_POST['rules'] ), 'sanitize_text_field' ) : array();
+
+		if ( ! empty( $_POST['rules'] ) ) {
+			foreach ( $wps_rules_ubo as $r ) {
+				if ( empty( $r['field'] ) || empty( $r['operator'] ) ) {
+					continue;
+				}
+
+				// Skip rules with empty value.
+				$value = array_filter( array_map( 'sanitize_text_field', (array) $r['value'] ) );
+				if ( empty( $value ) ) {
+					continue;
+				}
+
+				$rules[] = array(
+					'field'    => sanitize_text_field( $r['field'] ),
+					'operator' => sanitize_text_field( $r['operator'] ),
+					'value'    => $value,
+				);
+			}
+		}
+
+		// Get existing rules.
+		$wc_dynamic_discount_rules = get_option( 'wc_dynamic_discount_rules', array() );
+
+		// Check if funnel type exists.
+		if ( ! isset( $wc_dynamic_discount_rules[ $funnel_type ] ) ) {
+			$wc_dynamic_discount_rules[ $funnel_type ] = array();
+		}
+
+		// Replace rules for this funnel_type and bump_id.
+		$wc_dynamic_discount_rules[ $funnel_type ][ $bump_id ] = $rules;
+
+		// Update options with all funnel types, bump IDs and their rules.
+		$updated = update_option( 'wc_dynamic_discount_rules', $wc_dynamic_discount_rules );
+		update_option( 'wc_dynamic_discount_amount', floatval( $_POST['discount_amount'] ?? 0 ) );
+
+		wp_send_json_success(
+			array(
+				'message' => 'Rules saved successfully',
+				'rules' => $rules,
+				'funnel_type' => $funnel_type,
+				'bump_id' => $bump_id,
+			)
+		);
+	}
+);
+
+/**
+ * Sanitized array function.
+ *
+ * @param array $rules rules.
+ * @return array
+ */
+function sanitize_rules_array( $rules ) {
+	if ( ! is_array( $rules ) ) {
+		return sanitize_text_field( $rules );
+	}
+
+	$sanitized = array();
+	foreach ( $rules as $key => $rule ) {
+		if ( is_array( $rule ) ) {
+			$sanitized[ $key ] = sanitize_rules_array( $rule );
+		} else {
+			$sanitized[ $key ] = sanitize_text_field( $rule );
+		}
+	}
+	return $sanitized;
+}
+
+
+/**
+ * Render Value Input
+ *
+ * @param string $field field.
+ * @param string $index index.
+ * @param string $values values.
+ * @param string $coupons coupons.
+ * @param array  $countries countries list.
+ * @return string
+ */
+function wc_render_value_input( $field, $index, $values, $coupons, $countries = array() ) {
+	$html = '';
+
+	switch ( $field ) {
+		case 'coupon_applied':
+			$html .= '<select multiple class="select2-field" name="rules[' . $index . '][value][]">';
+			foreach ( $coupons as $coupon ) {
+				$coupon_code = $coupon->post_name;
+				$selected = in_array( $coupon_code, $values ) ? 'selected' : '';
+				$html .= '<option value="' . esc_attr( $coupon_code ) . '" ' . $selected . '>' . esc_html( $coupon->post_title ) . '</option>';
+			}
+			$html .= '</select>';
+			break;
+
+		case 'user_status':
+			$html .= '<select name="rules[' . $index . '][value][]">';
+			$statuses = array(
+				'logged_in' => 'Logged In User',
+				'guest' => 'Guest User',
+			);
+			foreach ( $statuses as $key => $label ) {
+				$selected = in_array( $key, $values ) ? 'selected' : '';
+				$html .= '<option value="' . esc_attr( $key ) . '" ' . $selected . '>' . esc_html( $label ) . '</option>';
+			}
+			$html .= '</select>';
+			break;
+
+		case 'user_registered':
+			$html .= '<select multiple class="select2-field" name="rules[' . $index . '][value][]">';
+			$users = get_users( array( 'fields' => array( 'ID', 'display_name', 'user_login' ) ) );
+			foreach ( $users as $user ) {
+				$selected = in_array( (string) $user->ID, $values ) ? 'selected' : '';
+				$html .= '<option value="' . esc_attr( $user->ID ) . '" ' . $selected . '>'
+					. esc_html( $user->display_name . ' (' . $user->user_login . ')' )
+					. '</option>';
+			}
+			$html .= '</select>';
+			break;
+
+		// ========== NEW: Device Type Case ==========
+		case 'device_type':
+			$html .= '<select name="rules[' . $index . '][value][]">';
+			$devices = array(
+				'mobile' => 'Mobile',
+				'desktop' => 'Desktop',
+			);
+			foreach ( $devices as $key => $label ) {
+				$selected = in_array( $key, $values ) ? 'selected' : '';
+				$html .= '<option value="' . esc_attr( $key ) . '" ' . $selected . '>' . esc_html( $label ) . '</option>';
+			}
+			$html .= '</select>';
+			break;
+		// ===========================================
+
+		// ========== NEW: Country Case ==========
+		case 'country':
+			$html .= '<select multiple class="select2-field" name="rules[' . $index . '][value][]">';
+			foreach ( $countries as $code => $name ) {
+				$selected = in_array( $code, $values ) ? 'selected' : '';
+				$html .= '<option value="' . esc_attr( $code ) . '" ' . $selected . '>' . esc_html( $name ) . '</option>';
+			}
+			$html .= '</select>';
+			break;
+		// =======================================
+
+		default:
+			$html .= '<input type="number" class="wps_number_validation" min="0" name="rules[' . $index . '][value][]" value="' . esc_attr( implode( ',', $values ) ) . '" />';
+	}
+
+	return $html;
+}
+
+// --- AJAX dynamic field rendering. ---
+add_action(
+	'wp_ajax_wc_get_dynamic_value_field',
+	function () {
+		// Verify nonce first.
+		$nonce = isset( $_POST['wc_dynamic_rules_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['wc_dynamic_rules_nonce'] ) ) : '';
+
+		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'wc_save_dynamic_rules' ) ) {
+			wp_send_json_error( array( 'message' => 'Nonce verification failed' ) );
+		}
+
+		// Sanitize and unslash POST data.
+		$field = isset( $_POST['field'] ) ? sanitize_text_field( wp_unslash( $_POST['field'] ) ) : '';
+		$row_idx = isset( $_POST['row_idx'] ) ? sanitize_text_field( wp_unslash( $_POST['row_idx'] ) ) : 0;
+
+		$coupons = get_posts(
+			array(
+				'post_type' => 'shop_coupon',
+				'posts_per_page' => -1,
+			)
+		);
+
+		// ========== NEW: Get countries for AJAX response ==========
+		$countries_obj = new WC_Countries();
+		$countries = $countries_obj->get_countries();
+		// ==========================================================
+
+		$allowed_html = array(
+			'select' => array(
+				'class' => array(),
+				'name' => array(),
+				'multiple' => array(),
+			),
+			'option' => array(
+				'value' => array(),
+				'selected' => array(),
+			),
+			'input' => array(
+				'type' => array(),
+				'name' => array(),
+				'value' => array(),
+				'class' => array(),
+				'min' => array(),
+			),
+		);
+
+		// ========== MODIFIED: Pass countries to function. ==========
+		$html = wc_render_value_input( $field, $row_idx, array(), $coupons, $countries );
+		// ==========================================================
+		echo wp_kses( $html, $allowed_html );
+		wp_die();
+	}
+);
+
+// ========== NEW: Helper function to detect device type. ==========
+/**
+ * Detect if user is on mobile device.
+ *
+ * @return string 'mobile' or 'desktop'.
+ */
+function wc_detect_device_type() {
+	$user_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
+
+	$mobile_agents = array(
+		'Android',
+		'iPhone',
+		'iPad',
+		'iPod',
+		'BlackBerry',
+		'Windows Phone',
+		'webOS',
+		'Mobile',
+		'Tablet',
+	);
+
+	foreach ( $mobile_agents as $agent ) {
+		if ( stripos( $user_agent, $agent ) !== false ) {
+			return 'mobile';
+		}
+	}
+
+	return 'desktop';
+}
+
+/**
+ * Get user's country code using WooCommerce GeoIP.
+ *
+ * @return string Country code (e.g., 'US', 'IN').
+ */
+function wc_get_user_country() {
+	$country = '';
+
+	// Try WooCommerce geolocation first.
+	if ( class_exists( 'WC_Geolocation' ) ) {
+		$location = WC_Geolocation::geolocate_ip();
+		$country = ! empty( $location['country'] ) ? $location['country'] : '';
+	}
+
+	// Fallback to customer session.
+	if ( empty( $country ) && WC()->customer ) {
+		$country = WC()->customer->get_billing_country();
+	}
+
+	// Fallback to shipping country.
+	if ( empty( $country ) && WC()->customer ) {
+		$country = WC()->customer->get_shipping_country();
+	}
+
+	return $country;
+}
+
+
+/**
+ * Wc_dynamic_discount_conditions_pass.
+ *
+ * @param string $funnel_type funnel type.
+ * @param string $bump_id bump id.
+ * @return boolean
+ */
+function wc_dynamic_discount_conditions_pass( $funnel_type = '', $bump_id = '' ) {
+	$all_rules = get_option( 'wc_dynamic_discount_rules', array() );
+
+	// If funnel type and bump ID provided, get specific rules.
+	if ( ! empty( $funnel_type ) && ! empty( $bump_id ) && isset( $all_rules[ $funnel_type ][ $bump_id ] ) ) {
+		$rules = $all_rules[ $funnel_type ][ $bump_id ];
+	} else {
+		return false;
+	}
+
+	if ( empty( $rules ) ) {
+		return false;
+	}
+
+	$cart = WC()->cart;
+	if ( ! $cart || $cart->get_cart_contents_count() === 0 ) {
+		$response = wp_remote_get( home_url( '/?rest_route=/wc/store/v1/cart' ) );
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
+		$cart_data = json_decode( wp_remote_retrieve_body( $response ), true );
+		if ( empty( $cart_data ) ) {
+			return false;
+		}
+		foreach ( $rules as $rule ) {
+			if ( ! wc_evaluate_rule_condition_block( $rule, $cart_data ) ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	foreach ( $rules as $rule ) {
+		if ( ! wc_evaluate_rule_condition( $rule, $cart ) ) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+ * Wc_evaluate_rule_condition.
+ *
+ * @param array $rule rule.
+ * @param array $cart cart.
+ * @return string
+ */
+function wc_evaluate_rule_condition( $rule, $cart ) {
+	$field = $rule['field'];
+	$operator = $rule['operator'];
+	$values = $rule['value'];
+
+	switch ( $field ) {
+		case 'cart_total':
+			$target = floatval( $cart->get_cart_contents_total() + $cart->get_shipping_total() + $cart->get_taxes_total() );
+			break;
+		case 'subtotal':
+			$target = floatval( $cart->get_subtotal() );
+			break;
+		case 'coupon_applied':
+			$target = $cart->get_applied_coupons();
+			break;
+		case 'user_status':
+			$target = is_user_logged_in() ? 'logged_in' : 'guest';
+			break;
+		case 'user_registered':
+			if ( is_user_logged_in() ) {
+				$user = wp_get_current_user();
+				$target = (string) $user->ID;
+			} else {
+				$target = '';
+			}
+			break;
+		// ========== NEW: Device Type Case ==========
+		case 'device_type':
+			$target = wc_detect_device_type();
+			break;
+		// ===========================================
+		// ========== NEW: Country Case ==========
+		case 'country':
+			$target = wc_get_user_country();
+			break;
+		// =======================================
+		default:
+			return false;
+	}
+
+	return wc_compare_rule_value( $field, $operator, $target, $values );
+}
+
+/**
+ * Evalauate the condition
+ *
+ * @param array $rule rule.
+ * @param array $cart_data cart data.
+ * @return string
+ */
+function wc_evaluate_rule_condition_block( $rule, $cart_data ) {
+	$field = $rule['field'];
+	$operator = $rule['operator'];
+	$values = $rule['value'];
+
+	switch ( $field ) {
+		case 'cart_total':
+			$target = floatval( $cart_data['totals']['total_price'] ?? 0 );
+			break;
+		case 'subtotal':
+			$target = floatval( $cart_data['totals']['subtotal'] ?? 0 );
+			break;
+		case 'coupon_applied':
+			$target = wp_list_pluck( $cart_data['coupons'] ?? array(), 'code' );
+			break;
+		case 'user_status':
+			$target = is_user_logged_in() ? 'logged_in' : 'guest';
+			break;
+		case 'user_registered':
+			if ( is_user_logged_in() ) {
+				$user = wp_get_current_user();
+				$target = (string) $user->ID;
+			} else {
+				$target = '';
+			}
+			break;
+		// ========== NEW: Device Type Case ==========
+		case 'device_type':
+			$target = wc_detect_device_type();
+			break;
+		// ===========================================
+		// ========== NEW: Country Case ==========
+		case 'country':
+			$target = wc_get_user_country();
+			break;
+		// =======================================
+		default:
+			return false;
+	}
+
+	return wc_compare_rule_value( $field, $operator, $target, $values );
+}
+
+/**
+ * Compare the rules to give output.
+ *
+ * @param  array $field field field.
+ * @param  array $operator operator.
+ * @param  array $target target.
+ * @param  array $values value.
+ * @return string
+ */
+function wc_compare_rule_value( $field, $operator, $target, $values ) {
+	switch ( $operator ) {
+		case 'greater_than':
+			return floatval( $target ) > floatval( $values[0] );
+		case 'less_than':
+			return floatval( $target ) < floatval( $values[0] );
+		case 'is':
+			$target = (array) $target;
+			$values = (array) $values;
+			$target = array_map( 'strtolower', $target );
+			$values = array_map( 'strtolower', $values );
+			return count( array_intersect( $target, $values ) ) > 0;
+		case 'is_not':
+			$target = (array) $target;
+			$values = (array) $values;
+			$target = array_map( 'strtolower', $target );
+			$values = array_map( 'strtolower', $values );
+			return count( array_intersect( $target, $values ) ) == 0;
+		default:
+			return false;
+	}
+}
