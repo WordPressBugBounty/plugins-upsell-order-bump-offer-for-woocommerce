@@ -4,10 +4,10 @@ Contributors: wpswings
 Donate link: https://wpswings.com/
 Tags: Funnel Builder, one-click upsell, woocommerce upsell, popups, frequently bought together
 Requires at least: 6.7.0
-Tested up to: 6.9.4
+Tested up to: 6.9
 WC requires at least: 6.5.0
-WC tested up to: 10.6.1
-Stable tag: 3.1.3
+WC tested up to: 10.7.0
+Stable tag: 3.1.4
 Requires PHP: 7.4
 License: GPLv3 or later 
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -500,9 +500,13 @@ Please visit [**WooCommerce Order Bump Knowledge Base**](https://support.wpswing
 
 == Changelog ==
 
+= 3.1.4 - Released on 06 May 2026 = 
+* New: Compatibility with the latest WP 6.9.4 and WC 10.7.0
+* New: UI/UX layout changes
+
 = 3.1.3 – Released on 25 March 2026 = 
-New: New funnel builder template 
-New: Compatibility with the latest WP 6.9.4 and WC 10.6.1
+* New: New funnel builder template 
+* New: Compatibility with the latest WP 6.9.4 and WC 10.6.1
 
 = 3.1.2 – Released on 19 February 2026 = 
 * New: New responsive order bump templates with standard theme compatibility.
@@ -775,6 +779,6 @@ New: Compatibility with the latest WP 6.9.4 and WC 10.6.1
 
 == Upgrade Notice ==
 
-= 3.1.3 – Released on 25 March 2026 = 
-New: New funnel builder template 
-New: Compatibility with the latest WP 6.9.4 and WC 10.6.1
+= 3.1.4 - Released on 06 May 2026 = 
+* New: Compatibility with the latest WP 6.9.4 and WC 10.7.0
+* New: UI/UX layout changes
