@@ -78,7 +78,7 @@ class Upsell_Order_Bump_Offer_For_Woocommerce {
 		if ( defined( 'UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION' ) ) {
 			$this->version = UPSELL_ORDER_BUMP_OFFER_FOR_WOOCOMMERCE_VERSION;
 		} else {
-			$this->version = '3.1.7';
+			$this->version = '3.1.8';
 		}
 		$this->plugin_name = 'upsell-order-bump-offer-for-woocommerce';
 
@@ -86,6 +86,184 @@ class Upsell_Order_Bump_Offer_For_Woocommerce {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->define_heatmap_hooks();
+		$this->define_reco_hooks();
+		$this->define_gamified_hooks();
+		$this->define_acr_hooks();
+	}
+
+	/**
+	 * Register all hooks for the Offer Heatmaps feature.
+	 *
+	 * @since 3.1.8
+	 */
+	private function define_heatmap_hooks() {
+		// Storage: create/upgrade table for sites updated without re-activation, and retention cron.
+		$this->loader->add_action( 'admin_init', 'Upsell_Order_Bump_Heatmap_Db', 'maybe_upgrade' );
+		$this->loader->add_action( Upsell_Order_Bump_Heatmap_Db::PURGE_CRON, 'Upsell_Order_Bump_Heatmap_Db', 'purge_old' );
+		$this->loader->add_action( 'admin_init', 'Upsell_Order_Bump_Heatmap_Public', 'add_privacy_policy_content' );
+
+		// A deleted bump or funnel takes its heatmap data with it: new bumps can reuse the id.
+		$this->loader->add_action( 'update_option_wps_ubo_bump_list', 'Upsell_Order_Bump_Heatmap_Db', 'purge_removed_bumps', 10, 2 );
+		$this->loader->add_action( 'update_option_wps_wocuf_funnels_list', 'Upsell_Order_Bump_Heatmap_Db', 'purge_removed_funnels', 10, 2 );
+		$this->loader->add_action( 'update_option_wps_wocuf_pro_funnels_list', 'Upsell_Order_Bump_Heatmap_Db', 'purge_removed_funnels', 10, 2 );
+
+		// Admin: report page, data and settings endpoints.
+		$heatmap_admin = new Upsell_Order_Bump_Heatmap_Admin( $this->get_version() );
+		$this->loader->add_action( 'admin_menu', $heatmap_admin, 'add_menu', 20 );
+		$this->loader->add_action( 'admin_enqueue_scripts', $heatmap_admin, 'enqueue_assets' );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_heatmap_data', $heatmap_admin, 'ajax_get_data' );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_heatmap_preview', $heatmap_admin, 'ajax_get_preview' );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_heatmap_save_settings', $heatmap_admin, 'ajax_save_settings' );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_heatmap_delete_all', $heatmap_admin, 'ajax_delete_all' );
+
+		// Public: only when the plugin itself is enabled (no offers are shown otherwise).
+		$wps_ubo_global_options = get_option( 'wps_ubo_global_options', array() );
+		$plugin_enabled         = ! empty( $wps_ubo_global_options['wps_bump_enable_plugin'] ) ? $wps_ubo_global_options['wps_bump_enable_plugin'] : 'on';
+
+		if ( 'on' === $plugin_enabled ) {
+			$heatmap_public = new Upsell_Order_Bump_Heatmap_Public( $this->get_version() );
+			$this->loader->add_action( 'wp_enqueue_scripts', $heatmap_public, 'enqueue_tracker', 20 );
+			$this->loader->add_filter( 'show_admin_bar', $heatmap_public, 'maybe_hide_admin_bar', 99 );
+			$this->loader->add_action( 'wp_ajax_' . Upsell_Order_Bump_Heatmap_Public::AJAX_ACTION, $heatmap_public, 'ingest' );
+			$this->loader->add_action( 'wp_ajax_nopriv_' . Upsell_Order_Bump_Heatmap_Public::AJAX_ACTION, $heatmap_public, 'ingest' );
+		}
+	}
+
+	/**
+	 * Register Smart Offer Recommendations hooks (ML + WordPress AI connectors).
+	 *
+	 * @since 3.1.8
+	 * @return void
+	 */
+	private function define_reco_hooks() {
+		// Storage, schema upgrades and background training.
+		$this->loader->add_action( 'admin_init', 'Upsell_Order_Bump_Reco_Db', 'maybe_upgrade' );
+		$this->loader->add_action( Upsell_Order_Bump_Reco_Db::TRAIN_HOOK, 'Upsell_Order_Bump_Reco_Engine', 'run_scheduled' );
+		$this->loader->add_action( 'admin_init', 'Upsell_Order_Bump_Reco_Admin', 'add_privacy_policy_content' );
+
+		// Admin page, AJAX and per-offer fields on the bump / funnel forms.
+		$reco_admin = new Upsell_Order_Bump_Reco_Admin( $this->get_version() );
+		$this->loader->add_action( 'admin_menu', $reco_admin, 'add_menu', 21 );
+		$this->loader->add_action( 'admin_enqueue_scripts', $reco_admin, 'enqueue_assets', 20 );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_reco_save_settings', $reco_admin, 'ajax_save_settings' );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_reco_train', $reco_admin, 'ajax_train' );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_reco_status', $reco_admin, 'ajax_status' );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_reco_delete_model', $reco_admin, 'ajax_delete_model' );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_reco_test_ai', $reco_admin, 'ajax_test_ai' );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_reco_preview', $reco_admin, 'ajax_preview' );
+		$this->loader->add_action( 'wps_ubo_bump_targeting_fields', $reco_admin, 'render_bump_fields', 10, 2 );
+		$this->loader->add_filter( 'wps_ubo_bump_before_save', $reco_admin, 'save_bump_fields', 10, 2 );
+		$this->loader->add_action( 'wps_ubo_funnel_targeting_fields', $reco_admin, 'render_funnel_fields', 10, 2 );
+		$this->loader->add_filter( 'wps_ubo_funnel_before_save', $reco_admin, 'save_funnel_fields', 10, 2 );
+
+		// Front end: product substitution on read, and guards so substitutions are never saved.
+		$this->loader->add_filter( 'option_wps_ubo_bump_list', 'Upsell_Order_Bump_Reco_Public', 'filter_bump_list' );
+		$this->loader->add_filter( 'option_wps_wocuf_funnels_list', 'Upsell_Order_Bump_Reco_Public', 'filter_funnels_list' );
+		$this->loader->add_filter( 'pre_update_option_wps_ubo_bump_list', 'Upsell_Order_Bump_Reco_Public', 'guard_bump_list' );
+		$this->loader->add_filter( 'pre_update_option_wps_wocuf_funnels_list', 'Upsell_Order_Bump_Reco_Public', 'guard_funnels_list' );
+	}
+
+	/**
+	 * Register Gamified bump offer hooks (spin wheel / scratch card).
+	 *
+	 * @since 3.1.8
+	 * @return void
+	 */
+	private function define_gamified_hooks() {
+		// Admin: "Gamified Offers" tab.
+		$gamified_admin = new Upsell_Order_Bump_Gamified_Admin( $this->get_version() );
+		$this->loader->add_action( 'wps_ubo_setting_tab', $gamified_admin, 'render_tab_link' );
+		$this->loader->add_action( 'wps_ubo_lite_setting_tab_html', $gamified_admin, 'render_tab_content' );
+		$this->loader->add_action( 'admin_init', $gamified_admin, 'handle_post' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $gamified_admin, 'enqueue_assets' );
+		$this->loader->add_filter( 'wps_ubo_lite_show_sidebar', $gamified_admin, 'hide_sidebar', 10, 2 );
+
+		/*
+		 * Prize price override. Read filter runs after Smart Recommendations (20 > 10) and the
+		 * write guard runs before it (5 < 10), so both features restore in reverse order.
+		 */
+		$this->loader->add_filter( 'option_wps_ubo_bump_list', 'Upsell_Order_Bump_Gamified', 'filter_bump_list', 20 );
+		$this->loader->add_filter( 'pre_update_option_wps_ubo_bump_list', 'Upsell_Order_Bump_Gamified', 'guard_bump_list', 5 );
+
+		$wps_ubo_global_options = get_option( 'wps_ubo_global_options', array() );
+		$plugin_enabled         = ! empty( $wps_ubo_global_options['wps_bump_enable_plugin'] ) ? $wps_ubo_global_options['wps_bump_enable_plugin'] : 'on';
+		if ( 'on' !== $plugin_enabled ) {
+			return;
+		}
+
+		// Front end: render games, server-side draw, accept tracking, order meta.
+		$gamified_public = new Upsell_Order_Bump_Gamified_Public( $this->get_version() );
+		$this->loader->add_action( 'wp_enqueue_scripts', $gamified_public, 'enqueue_assets', 20 );
+		$this->loader->add_filter( 'wps_ubo_bump_offer_output_handled', $gamified_public, 'render_game', 10, 4 );
+		$this->loader->add_action( 'wps_ubo_before_bump_offer_html', $gamified_public, 'before_bump_html' );
+		$this->loader->add_action( 'wps_ubo_after_bump_offer_html', $gamified_public, 'after_bump_html' );
+		$this->loader->add_action( 'wp_ajax_' . Upsell_Order_Bump_Gamified_Public::AJAX_ACTION, $gamified_public, 'ajax_play' );
+		$this->loader->add_action( 'wp_ajax_nopriv_' . Upsell_Order_Bump_Gamified_Public::AJAX_ACTION, $gamified_public, 'ajax_play' );
+		$this->loader->add_action( 'woocommerce_add_to_cart', $gamified_public, 'track_accept', 10, 6 );
+		$this->loader->add_action( 'woocommerce_checkout_create_order_line_item', $gamified_public, 'add_item_meta', 10, 3 );
+		$this->loader->add_filter( 'woocommerce_add_cart_item_data', $gamified_public, 'add_prize_to_cart_item', 20 );
+		// Prizes are cleared once the order is really placed (cart emptied after payment /
+		// order received), not when it is created before payment ( no re-roll on failed payment ).
+		$this->loader->add_action( 'woocommerce_cart_emptied', $gamified_public, 'clear_after_order', 99 );
+		$this->loader->add_action( 'woocommerce_thankyou', $gamified_public, 'clear_after_paid_order', 99 );
+	}
+
+	/**
+	 * Register native cart abandonment upsell recovery hooks.
+	 * Independent of the existing "Abandoned Cart Bump" integration (external plugin), which is unchanged.
+	 *
+	 * @since 3.1.8
+	 * @return void
+	 */
+	private function define_acr_hooks() {
+		// Storage, scheduling, privacy text.
+		$this->loader->add_action( 'admin_init', 'Upsell_Order_Bump_Acr_Db', 'maybe_upgrade' );
+		$this->loader->add_filter( 'cron_schedules', 'Upsell_Order_Bump_Acr_Db', 'cron_schedules' );
+		$this->loader->add_action( Upsell_Order_Bump_Acr_Db::CRON_HOOK, 'Upsell_Order_Bump_Acr_Engine', 'process' );
+		$this->loader->add_action( 'admin_init', 'Upsell_Order_Bump_Acr_Public', 'add_privacy_policy_content' );
+		$this->loader->add_filter( 'wp_privacy_personal_data_exporters', 'Upsell_Order_Bump_Acr_Public', 'register_exporter' );
+		$this->loader->add_filter( 'wp_privacy_personal_data_erasers', 'Upsell_Order_Bump_Acr_Public', 'register_eraser' );
+
+		// Admin: "Cart Recovery" tab.
+		$acr_admin = new Upsell_Order_Bump_Acr_Admin( $this->get_version() );
+		$this->loader->add_action( 'wps_ubo_setting_tab', $acr_admin, 'render_tab_link' );
+		$this->loader->add_action( 'wps_ubo_lite_setting_tab_html', $acr_admin, 'render_tab_content' );
+		$this->loader->add_action( 'admin_init', $acr_admin, 'handle_post' );
+		$this->loader->add_action( 'admin_post_wps_ubo_acr_preview', $acr_admin, 'preview' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $acr_admin, 'enqueue_assets' );
+		$this->loader->add_filter( 'wps_ubo_lite_show_sidebar', $acr_admin, 'hide_sidebar' );
+
+		// Front end. Capture, sending and the checkout script stop while the feature is disabled;
+		// links in emails already sent (restore, unsubscribe) keep working and honour the emailed price.
+		$acr_public = new Upsell_Order_Bump_Acr_Public( $this->get_version() );
+		foreach ( array( 'woocommerce_add_to_cart', 'woocommerce_cart_item_removed', 'woocommerce_after_cart_item_quantity_update', 'woocommerce_cart_emptied', 'woocommerce_cart_item_restored' ) as $cart_hook ) {
+			$this->loader->add_action( $cart_hook, $acr_public, 'mark_dirty' );
+		}
+		$this->loader->add_action( 'shutdown', $acr_public, 'maybe_sync', 5 );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_acr_capture', $acr_public, 'ajax_capture' );
+		$this->loader->add_action( 'wp_ajax_nopriv_wps_ubo_acr_capture', $acr_public, 'ajax_capture' );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_acr_optout', $acr_public, 'ajax_optout' );
+		$this->loader->add_action( 'wp_ajax_nopriv_wps_ubo_acr_optout', $acr_public, 'ajax_optout' );
+		$this->loader->add_action( 'wp_ajax_wps_ubo_acr_toggle_offer', $acr_public, 'ajax_toggle_offer' );
+		$this->loader->add_action( 'wp_ajax_nopriv_wps_ubo_acr_toggle_offer', $acr_public, 'ajax_toggle_offer' );
+		$this->loader->add_action( 'template_redirect', $acr_public, 'handle_links', 5 );
+		$this->loader->add_action( 'woocommerce_before_calculate_totals', $acr_public, 'apply_offer_price', 30 );
+		$this->loader->add_action( 'woocommerce_before_checkout_form', $acr_public, 'print_offer_box', 5 );
+		$this->loader->add_filter( 'render_block_woocommerce/checkout', $acr_public, 'prepend_offer_box' );
+		$this->loader->add_action( 'woocommerce_checkout_create_order_line_item', $acr_public, 'add_item_meta', 10, 3 );
+		// Order created ( before payment ): remember the saved cart. Paid: attribute it.
+		$this->loader->add_action( 'woocommerce_checkout_order_processed', $acr_public, 'on_order_classic', 20 );
+		$this->loader->add_action( 'woocommerce_store_api_checkout_order_processed', $acr_public, 'on_order_block', 20 );
+		$this->loader->add_action( 'woocommerce_payment_complete', $acr_public, 'on_payment_complete', 20 );
+		$this->loader->add_action( 'woocommerce_order_status_changed', $acr_public, 'on_status_changed', 20, 4 );
+		$this->loader->add_action( 'woocommerce_cart_emptied', $acr_public, 'clear_recovery_session' );
+		// The recovery offer is one unit, read-only, and the recovery coupon doesn't stack on it.
+		$this->loader->add_action( 'woocommerce_after_cart_item_quantity_update', $acr_public, 'lock_offer_quantity', 10, 4 );
+		$this->loader->add_filter( 'woocommerce_store_api_product_quantity_editable', $acr_public, 'offer_quantity_editable', 10, 3 );
+		$this->loader->add_filter( 'woocommerce_cart_item_quantity', $acr_public, 'offer_quantity_html', 20, 3 );
+		$this->loader->add_filter( 'woocommerce_coupon_is_valid_for_product', $acr_public, 'coupon_not_on_offer', 10, 4 );
+		$this->loader->add_action( 'wp_enqueue_scripts', $acr_public, 'enqueue_assets', 20 );
 	}
 
 	/**
@@ -158,6 +336,38 @@ class Upsell_Order_Bump_Offer_For_Woocommerce {
 		 */
 		require_once plugin_dir_path( __DIR__ ) . 'includes/class-upsell-order-bump-talk-to-expert-form.php';
 
+		/**
+		 * The classes responsible for Offer Heatmaps (click / hover tracking on offer templates).
+		 */
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-upsell-order-bump-heatmap-db.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/class-upsell-order-bump-heatmap-public.php';
+		require_once plugin_dir_path( __DIR__ ) . 'admin/class-upsell-order-bump-heatmap-admin.php';
+
+		/**
+		 * Smart Offer Recommendations (ML + WordPress AI connectors).
+		 */
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-upsell-order-bump-reco-db.php';
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-upsell-order-bump-reco-engine.php';
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-upsell-order-bump-reco-ai.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/class-upsell-order-bump-reco-public.php';
+		require_once plugin_dir_path( __DIR__ ) . 'admin/class-upsell-order-bump-reco-admin.php';
+
+		/**
+		 * Gamified bump offers (spin wheel / scratch card).
+		 */
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-upsell-order-bump-gamified.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/class-upsell-order-bump-gamified-public.php';
+		require_once plugin_dir_path( __DIR__ ) . 'admin/class-upsell-order-bump-gamified-admin.php';
+
+		/**
+		 * Native cart abandonment upsell recovery.
+		 */
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-upsell-order-bump-acr-db.php';
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-upsell-order-bump-acr-engine.php';
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-upsell-order-bump-acr-mailer.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/class-upsell-order-bump-acr-public.php';
+		require_once plugin_dir_path( __DIR__ ) . 'admin/class-upsell-order-bump-acr-admin.php';
+
 		$this->loader = new Upsell_Order_Bump_Offer_For_Woocommerce_Loader();
 	}
 
@@ -216,6 +426,7 @@ class Upsell_Order_Bump_Offer_For_Woocommerce {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		// Rest functionality for admin side ajax.
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'attach_admin_search_nonce', 999 );
 		$this->loader->add_action( 'wp_ajax_search_products_for_bump', $plugin_admin, 'search_products_for_bump' );
 		$this->loader->add_action( 'wp_ajax_search_product_categories_for_bump', $plugin_admin, 'search_product_categories_for_bump' );
 		$this->loader->add_action( 'wp_ajax_search_products_for_offers', $plugin_admin, 'search_products_for_offers' );
@@ -323,6 +534,13 @@ class Upsell_Order_Bump_Offer_For_Woocommerce {
 		// By default plugin will be enabled.
 		$wps_upsell_bump_enable_plugin = ! empty( $wps_ubo_global_options['wps_bump_enable_plugin'] ) ? $wps_ubo_global_options['wps_bump_enable_plugin'] : 'on';
 
+		// Order bump meta form values are shopper input: always show them as plain text,
+		// even when order bumps are switched off ( older orders may still hold them ).
+		$this->loader->add_filter( 'woocommerce_order_item_display_meta_value', 'Upsell_Order_Bump_Offer_For_Woocommerce_Public', 'escape_order_bump_meta_value', 10, 3 );
+
+		// One-time clean-up of meta form values stored before WPS-8604.
+		$this->loader->add_action( 'admin_init', 'Upsell_Order_Bump_Offer_For_Woocommerce_Public', 'maybe_clean_stored_bump_meta_form_values' );
+
 		if ( 'on' === $wps_upsell_bump_enable_plugin ) {
 
 			$plugin_public = new Upsell_Order_Bump_Offer_For_Woocommerce_Public( $this->get_plugin_name(), $this->get_version() );
@@ -366,6 +584,14 @@ class Upsell_Order_Bump_Offer_For_Woocommerce {
 			// Ajax to add bump offer.
 			$this->loader->add_action( 'wp_ajax_add_offer_in_cart', $plugin_public, 'add_offer_in_cart' );
 			$this->loader->add_action( 'wp_ajax_nopriv_add_offer_in_cart', $plugin_public, 'add_offer_in_cart' );
+
+			// A bump line's quantity stays within the bump's allowed quantity ( any source ).
+			$this->loader->add_action( 'woocommerce_after_cart_item_quantity_update', $plugin_public, 'wps_ubo_clamp_bump_line_quantity', 10, 4 );
+			$this->loader->add_filter( 'woocommerce_store_api_product_quantity_editable', $plugin_public, 'wps_ubo_bump_line_quantity_editable', 10, 3 );
+
+			// Ajax to sync the quantity of an already added bump offer.
+			$this->loader->add_action( 'wp_ajax_wps_ubo_update_offer_quantity', $plugin_public, 'wps_ubo_update_offer_quantity' );
+			$this->loader->add_action( 'wp_ajax_nopriv_wps_ubo_update_offer_quantity', $plugin_public, 'wps_ubo_update_offer_quantity' );
 
 			// Ajax for the recommdation product.
 			$this->loader->add_action( 'wp_ajax_add_recommendated_offer_in_popup', $plugin_public, 'wps_add_recommendated_offer_in_popup' );
